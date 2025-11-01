@@ -64,6 +64,47 @@ def initialize_claude_client():
     return anthropic.Anthropic(api_key=api_key)
 
 
+def detect_vulnerability_type_from_cve(cve_id: str) -> str:
+    """Auto-detect if vulnerability is BASE_CONTAINER or APPLICATION_LEVEL based on CVE ID"""
+    
+    client = initialize_claude_client()
+    
+    prompt = f"""You are a security expert. Based on the CVE ID: {cve_id}, determine if this vulnerability is:
+    
+1. BASE_CONTAINER - Affects the base OS, kernel, system libraries (e.g., OpenSSL, glibc, Linux kernel)
+2. APPLICATION_LEVEL - Affects specific applications, frameworks, or libraries (e.g., Django, Log4j, npm packages)
+
+Return ONLY one of these values: BASE_CONTAINER or APPLICATION_LEVEL
+
+If you don't know this CVE, make an educated guess based on common patterns.
+
+Examples:
+- CVE-2021-3129 (OpenSSL) → BASE_CONTAINER
+- CVE-2023-38545 (Log4Shell) → APPLICATION_LEVEL
+- CVE-2022-0001 (Linux kernel) → BASE_CONTAINER
+- CVE-2023-44487 (HTTP/2 vulnerability) → BASE_CONTAINER
+
+Return ONLY the classification, nothing else."""
+
+    try:
+        message = client.messages.create(
+            model="claude-3-5-sonnet-20241022",
+            max_tokens=50,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        response = message.content[0].text.strip().upper()
+        
+        if "APPLICATION" in response:
+            return "Application Layer"
+        elif "BASE" in response:
+            return "Base Layer"
+        else:
+            return "Unknown"
+    except:
+        return "Unknown"
+
+
 def analyze_vulnerability_with_claude(vulnerability_details: dict) -> dict:
     """Use Claude API to analyze vulnerability"""
     
@@ -223,9 +264,9 @@ with tab1:
             help="Full container image name with tag"
         )
         vuln_id = st.text_input(
-            "Vulnerability ID *",
+            "Vulnerability ID / CVE *",
             placeholder="e.g., CVE-2024-1234",
-            help="CVE or vendor vulnerability ID"
+            help="CVE or vendor ID - Auto-detection enabled! ✨"
         )
     
     with col2:
@@ -233,9 +274,28 @@ with tab1:
             "Severity Hint",
             ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
         )
+        
+        # Auto-detect vulnerability type from CVE ID
+        detected_type = "Base Layer"
+        if vuln_id and vuln_id.strip():
+            if st.button("🔍 Auto-Detect Type", key="auto_detect_btn", help="Analyze CVE to auto-populate type"):
+                with st.spinner("Analyzing CVE..."):
+                    detected_type = detect_vulnerability_type_from_cve(vuln_id)
+                    st.session_state.detected_type = detected_type
+                    st.success(f"✅ Detected: {detected_type}")
+        
+        detected_type = st.session_state.get("detected_type", "Base Layer")
+        
+        try:
+            default_index = ["Base Layer", "Application Layer", "Dependencies", "Configuration"].index(detected_type)
+        except:
+            default_index = 0
+        
         detected_in = st.selectbox(
-            "Detected In",
-            ["Base Layer", "Application Layer", "Dependencies", "Configuration"]
+            "Detected In (Auto-filled ✨)",
+            ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
+            index=default_index,
+            help="Auto-detected from CVE - Click button above to detect, or change manually"
         )
     
     description = st.text_area(
@@ -404,11 +464,13 @@ with tab3:
     **CSV File Format:**
     Your CSV should have these columns:
     - `image_name` (required): Container image name with tag (e.g., nginx:1.19.0)
-    - `vuln_id` (required): Vulnerability ID (e.g., CVE-2024-1234)
+    - `vuln_id` (required): Vulnerability ID/CVE (e.g., CVE-2024-1234)
     - `description` (required): Vulnerability description
-    - `detected_in` (optional): Base Layer, Application Layer, Dependencies, Configuration
+    - `detected_in` (optional): Will be auto-detected from CVE! Base Layer, Application Layer, Dependencies, Configuration
     - `current_version` (optional): Current version of affected component
     - `affected_component` (optional): Name of affected library/package
+    
+    **✨ NEW:** Leave `detected_in` empty and enable "Auto-detect" checkbox to automatically determine if it's a BASE_CONTAINER or APPLICATION_LEVEL vulnerability!
     """)
     
     # File uploader
@@ -427,6 +489,15 @@ with tab3:
             
             st.divider()
             
+            # Auto-detect option
+            col1, col2 = st.columns(2)
+            with col1:
+                auto_detect = st.checkbox(
+                    "🔍 Auto-detect 'Detected In' from CVE IDs",
+                    value=True,
+                    help="Automatically detect vulnerability type from CVE IDs in the CSV"
+                )
+            
             # Analyze all button
             if st.button("🚀 Analyze All Vulnerabilities", type="primary", use_container_width=True):
                 progress_bar = st.progress(0)
@@ -435,11 +506,18 @@ with tab3:
                 for idx, row in df.iterrows():
                     progress_bar.progress((idx + 1) / len(df))
                     
+                    # Auto-detect if enabled and detected_in is missing
+                    detected_in_value = row.get("detected_in", "Unknown")
+                    if auto_detect and (detected_in_value == "Unknown" or pd.isna(detected_in_value)):
+                        vuln_id = row.get("vuln_id", "")
+                        if vuln_id and str(vuln_id).startswith("CVE-"):
+                            detected_in_value = detect_vulnerability_type_from_cve(vuln_id)
+                    
                     vulnerability_details = {
                         "image_name": row.get("image_name", "Unknown"),
                         "vuln_id": row.get("vuln_id", "Unknown"),
                         "description": row.get("description", "Unknown"),
-                        "detected_in": row.get("detected_in", "Unknown"),
+                        "detected_in": detected_in_value,
                         "current_version": row.get("current_version", ""),
                         "affected_component": row.get("affected_component", "")
                     }
@@ -461,6 +539,7 @@ with tab3:
                         results_list.append({
                             "Image": vulnerability_details["image_name"],
                             "Vulnerability ID": vuln_id,
+                            "Detected In": vulnerability_details["detected_in"],
                             "Classification": analysis.get("classification", "UNKNOWN"),
                             "Severity": analysis.get("severity", "UNKNOWN"),
                             "Confidence": f"{analysis.get('confidence', 0)}%",
