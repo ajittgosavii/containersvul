@@ -147,7 +147,7 @@ Respond with ONLY "BASE_CONTAINER" or "APPLICATION_LEVEL". Nothing else."""
 
         try:
             message = client.messages.create(
-                model="claude-3-5-sonnet-20241022",
+                model="claude-sonnet-4-5-20250929",
                 max_tokens=20,
                 messages=[{"role": "user", "content": prompt}]
             )
@@ -181,7 +181,7 @@ Respond with ONLY "BASE_CONTAINER" or "APPLICATION_LEVEL"."""
 
         try:
             message = client.messages.create(
-                model="claude-3-5-sonnet-20241022",
+                model="claude-sonnet-4-5-20250929",
                 max_tokens=20,
                 messages=[{"role": "user", "content": prompt}]
             )
@@ -243,7 +243,7 @@ Provide your response in the following JSON format:
 
     with st.spinner("🔍 Analyzing vulnerability with Claude..."):
         message = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-5-20250929",
             max_tokens=1024,
             messages=[{"role": "user", "content": prompt}]
         )
