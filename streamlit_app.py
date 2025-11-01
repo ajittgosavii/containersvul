@@ -3,6 +3,8 @@ import anthropic
 import json
 from datetime import datetime
 import re
+import pandas as pd
+from io import StringIO
 
 # Configure Streamlit page
 st.set_page_config(
@@ -207,7 +209,7 @@ with st.sidebar:
     st.write(f"API Status: {api_status}")
 
 # Main tabs
-tab1, tab2, tab3 = st.tabs(["🔍 Analyze", "📊 History", "📖 Guide"])
+tab1, tab2, tab3, tab4 = st.tabs(["🔍 Analyze", "📊 History", "📤 Bulk Upload", "📖 Guide"])
 
 with tab1:
     st.subheader("Enter Vulnerability Details")
@@ -394,6 +396,129 @@ with tab2:
         st.info("ℹ️ No vulnerabilities analyzed yet")
 
 with tab3:
+    st.subheader("📤 Bulk Upload & Analyze")
+    st.write("Upload a CSV file with multiple vulnerabilities to analyze them all at once.")
+    
+    # CSV template info
+    st.info("""
+    **CSV File Format:**
+    Your CSV should have these columns:
+    - `image_name` (required): Container image name with tag (e.g., nginx:1.19.0)
+    - `vuln_id` (required): Vulnerability ID (e.g., CVE-2024-1234)
+    - `description` (required): Vulnerability description
+    - `detected_in` (optional): Base Layer, Application Layer, Dependencies, Configuration
+    - `current_version` (optional): Current version of affected component
+    - `affected_component` (optional): Name of affected library/package
+    """)
+    
+    # File uploader
+    uploaded_file = st.file_uploader("Choose CSV file", type="csv")
+    
+    if uploaded_file is not None:
+        try:
+            # Read CSV file
+            df = pd.read_csv(uploaded_file)
+            
+            st.success(f"✅ Loaded {len(df)} vulnerabilities from CSV")
+            
+            # Display preview
+            with st.expander("📋 Preview CSV Data", expanded=False):
+                st.dataframe(df, use_container_width=True)
+            
+            st.divider()
+            
+            # Analyze all button
+            if st.button("🚀 Analyze All Vulnerabilities", type="primary", use_container_width=True):
+                progress_bar = st.progress(0)
+                results_list = []
+                
+                for idx, row in df.iterrows():
+                    progress_bar.progress((idx + 1) / len(df))
+                    
+                    vulnerability_details = {
+                        "image_name": row.get("image_name", "Unknown"),
+                        "vuln_id": row.get("vuln_id", "Unknown"),
+                        "description": row.get("description", "Unknown"),
+                        "detected_in": row.get("detected_in", "Unknown"),
+                        "current_version": row.get("current_version", ""),
+                        "affected_component": row.get("affected_component", "")
+                    }
+                    
+                    try:
+                        analysis = analyze_vulnerability_with_claude(vulnerability_details)
+                        
+                        # Store in session state
+                        vuln_id = vulnerability_details["vuln_id"]
+                        st.session_state.analysis_results[vuln_id] = analysis
+                        st.session_state.vulnerabilities.append({
+                            "id": vuln_id,
+                            "image": vulnerability_details["image_name"],
+                            "timestamp": datetime.now().isoformat(),
+                            "details": vulnerability_details
+                        })
+                        
+                        # Add to results list
+                        results_list.append({
+                            "Image": vulnerability_details["image_name"],
+                            "Vulnerability ID": vuln_id,
+                            "Classification": analysis.get("classification", "UNKNOWN"),
+                            "Severity": analysis.get("severity", "UNKNOWN"),
+                            "Confidence": f"{analysis.get('confidence', 0)}%",
+                            "Fix Time": analysis.get("estimated_fix_time", "Unknown")
+                        })
+                    except Exception as e:
+                        st.warning(f"⚠️ Failed to analyze {vulnerability_details.get('vuln_id')}: {str(e)}")
+                
+                st.success(f"✅ Analyzed {len(results_list)} vulnerabilities!")
+                
+                # Display results table
+                st.subheader("📊 Analysis Results")
+                results_df = pd.DataFrame(results_list)
+                st.dataframe(results_df, use_container_width=True)
+                
+                # Download results as CSV
+                csv_results = results_df.to_csv(index=False)
+                st.download_button(
+                    label="📥 Download Results as CSV",
+                    data=csv_results,
+                    file_name=f"vulnerability_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                    mime="text/csv",
+                    use_container_width=True
+                )
+                
+                st.rerun()
+        
+        except Exception as e:
+            st.error(f"❌ Error reading CSV file: {str(e)}")
+    
+    st.divider()
+    
+    # Download template
+    st.subheader("📝 Download CSV Template")
+    
+    template_df = pd.DataFrame({
+        "image_name": ["nginx:1.19.0", "python:3.9-slim", "myapp:1.0"],
+        "vuln_id": ["CVE-2021-3129", "CVE-2023-12345", "CVE-2023-38545"],
+        "description": [
+            "OpenSSL vulnerability in nginx",
+            "Python interpreter vulnerability",
+            "Log4Shell vulnerability in application"
+        ],
+        "detected_in": ["Base Layer", "Base Layer", "Application Layer"],
+        "current_version": ["1.19.0", "3.9.1", "1.0"],
+        "affected_component": ["nginx", "python", "Log4j"]
+    })
+    
+    csv_template = template_df.to_csv(index=False)
+    st.download_button(
+        label="📋 Download CSV Template",
+        data=csv_template,
+        file_name="vulnerability_template.csv",
+        mime="text/csv",
+        use_container_width=True
+    )
+
+with tab4:
     st.subheader("📖 Vulnerability Classification Guide")
     
     col1, col2 = st.columns(2)
