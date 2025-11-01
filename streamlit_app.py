@@ -6,42 +6,367 @@ import re
 import pandas as pd
 from io import StringIO
 import requests
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 # Configure Streamlit page
 st.set_page_config(
-    page_title="Container Vulnerability Analyzer",
-    page_icon="🔐",
+    page_title="Enterprise Container Security Platform",
+    page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Enterprise-grade Custom CSS
 st.markdown("""
     <style>
+    /* Import Professional Font */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    /* Global Styles */
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    /* Main Background */
+    .main {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+    }
+    
+    /* Hide Streamlit Branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Professional Header */
+    .header-container {
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+        padding: 2rem 3rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 25px rgba(30, 58, 138, 0.15);
+    }
+    
+    .header-title {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+    
+    .header-subtitle {
+        color: #93c5fd;
+        font-size: 1rem;
+        font-weight: 400;
+        margin-top: 0.5rem;
+    }
+    
+    /* Professional Cards */
+    .metric-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Enhanced Metric Display */
+    .stMetric {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid #2563eb;
+    }
+    
+    .stMetric label {
+        color: #6b7280 !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .stMetric [data-testid="stMetricValue"] {
+        color: #1f2937 !important;
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Professional Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background: white;
+        border-radius: 12px;
+        padding: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        border-radius: 8px;
+        padding: 0 24px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        background: transparent;
+        color: #6b7280;
+        transition: all 0.2s ease;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background: #f3f4f6;
+        color: #1f2937;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    
+    /* Professional Buttons */
+    .stButton > button {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        letter-spacing: 0.3px;
+    }
+    
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        transform: translateY(-2px);
+    }
+    
+    /* Professional Input Fields */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div > div,
+    .stTextArea > div > div > textarea {
+        border-radius: 8px;
+        border: 2px solid #e5e7eb;
+        font-size: 0.95rem;
+        padding: 0.75rem;
+        transition: all 0.2s ease;
+    }
+    
+    .stTextInput > div > div > input:focus,
+    .stSelectbox > div > div > div:focus,
+    .stTextArea > div > div > textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    /* Severity Badges */
     .vulnerability-box {
-        border-radius: 0.5rem;
+        border-radius: 12px;
         padding: 1.5rem;
         margin-bottom: 1rem;
+        border: 1px solid;
+        transition: all 0.3s ease;
     }
+    
+    .vulnerability-box:hover {
+        transform: translateX(4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    
     .critical {
-        background-color: #ffebee;
-        border-left: 4px solid #d32f2f;
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border-color: #dc2626;
+        border-left: 5px solid #dc2626;
     }
+    
     .high {
-        background-color: #fff3e0;
-        border-left: 4px solid #f57c00;
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border-color: #f59e0b;
+        border-left: 5px solid #f59e0b;
     }
+    
     .medium {
-        background-color: #fff8e1;
-        border-left: 4px solid #fbc02d;
+        background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+        border-color: #eab308;
+        border-left: 5px solid #eab308;
     }
+    
     .low {
-        background-color: #f1f8e9;
-        border-left: 4px solid #558b2f;
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border-color: #22c55e;
+        border-left: 5px solid #22c55e;
     }
+    
     .remediated {
-        background-color: #e8f5e9;
-        border-left: 4px solid #2e7d32;
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        border-color: #10b981;
+        border-left: 5px solid #10b981;
+    }
+    
+    /* Professional Data Tables */
+    .stDataFrame {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Info/Warning/Success Boxes */
+    .stAlert {
+        border-radius: 12px;
+        border-left: 5px solid;
+        padding: 1.25rem;
+        font-size: 0.95rem;
+    }
+    
+    /* Expander Styling */
+    .streamlit-expanderHeader {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        font-weight: 600;
+        color: #1f2937;
+        padding: 1rem;
+        transition: all 0.2s ease;
+    }
+    
+    .streamlit-expanderHeader:hover {
+        background: #f9fafb;
+        border-color: #2563eb;
+    }
+    
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: white !important;
+    }
+    
+    [data-testid="stSidebar"] .stMarkdown {
+        color: white !important;
+    }
+    
+    /* Divider Styling */
+    hr {
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+        margin: 2rem 0;
+    }
+    
+    /* Code Blocks */
+    .stCodeBlock {
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    /* Download Buttons */
+    .stDownloadButton > button {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .stDownloadButton > button:hover {
+        background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+        transform: translateY(-2px);
+    }
+    
+    /* Progress Bar */
+    .stProgress > div > div {
+        background: linear-gradient(90deg, #2563eb, #1e40af);
+        border-radius: 8px;
+    }
+    
+    /* File Uploader */
+    [data-testid="stFileUploader"] {
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 2rem;
+        background: white;
+        transition: all 0.3s ease;
+    }
+    
+    [data-testid="stFileUploader"]:hover {
+        border-color: #2563eb;
+        background: #f8fafc;
+    }
+    
+    /* Spinner */
+    .stSpinner > div {
+        border-top-color: #2563eb !important;
+    }
+    
+    /* Section Headers */
+    h1, h2, h3, h4 {
+        color: #1f2937;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    h2 {
+        font-size: 2rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    h3 {
+        font-size: 1.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: #374151;
+    }
+    
+    /* Checkbox Styling */
+    .stCheckbox {
+        font-weight: 500;
+    }
+    
+    /* Radio Button Styling */
+    .stRadio > label {
+        font-weight: 600;
+        color: #374151;
+    }
+    
+    /* Professional Scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #1e40af, #1e3a8a);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -338,22 +663,588 @@ echo "✅ Application vulnerability remediation completed!"
     return script
 
 
-# Main UI
-st.markdown("# 🔐 Container Vulnerability Analyzer")
-st.markdown("Powered by Anthropic Claude API")
+# Professional Enterprise Header
+st.markdown("""
+    <div class="header-container">
+        <h1 class="header-title">🛡️ Enterprise Container Security Platform</h1>
+        <p class="header-subtitle">AI-Powered Vulnerability Analysis & Remediation | Powered by Anthropic Claude</p>
+    </div>
+""", unsafe_allow_html=True)
 
-st.divider()
-
-# Sidebar
+# Enhanced Professional Sidebar
 with st.sidebar:
-    st.header("⚙️ Configuration")
-    api_status = "✅ Configured" if st.secrets.get("ANTHROPIC_API_KEY") else "❌ Not Configured"
-    st.write(f"API Status: {api_status}")
+    st.markdown("### ⚙️ System Configuration")
+    st.markdown("---")
+    
+    # API Status Section
+    st.markdown("#### 🔌 API Connectivity")
+    anthropic_status = st.secrets.get("ANTHROPIC_API_KEY")
+    nvd_status = st.secrets.get("NVD_API_KEY")
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.write("Claude AI")
+    with col2:
+        if anthropic_status:
+            st.success("✓")
+        else:
+            st.error("✗")
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.write("NVD Database")
+    with col2:
+        if nvd_status:
+            st.success("✓")
+        else:
+            st.error("✗")
+    
+    st.markdown("---")
+    
+    # Quick Stats
+    if st.session_state.vulnerabilities:
+        st.markdown("#### 📊 Quick Stats")
+        total = len(st.session_state.vulnerabilities)
+        remediated = len([v for v in st.session_state.remediation_status.values() if v.get("status") == "REMEDIATED"])
+        
+        st.metric("Total Analyzed", total)
+        st.metric("Remediated", remediated)
+        
+        if total > 0:
+            success_pct = (remediated / total * 100)
+            st.metric("Success Rate", f"{success_pct:.0f}%")
+    
+    st.markdown("---")
+    
+    # System Info
+    st.markdown("#### ℹ️ System Info")
+    st.caption(f"**Version:** 2.0 Enterprise")
+    st.caption(f"**Model:** Claude Sonnet 4.5")
+    st.caption(f"**Last Updated:** Nov 2025")
+    
+    st.markdown("---")
+    
+    # Help Section
+    with st.expander("📚 Quick Help"):
+        st.markdown("""
+        **Getting Started:**
+        1. Upload CSV in Bulk Upload
+        2. Or analyze single CVE
+        3. View Dashboard for insights
+        
+        **Need Support?**
+        - Check the Guide tab
+        - Review documentation
+        """)
 
-# Main tabs
-tab1, tab2, tab3, tab4 = st.tabs(["🔍 Analyze", "📊 History", "📤 Bulk Upload", "📖 Guide"])
+# Main tabs with professional icons
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "📊 Dashboard", 
+    "🔍 Analyze", 
+    "📈 History", 
+    "📤 Bulk Upload", 
+    "📖 Guide"
+])
 
+# Dashboard Tab
 with tab1:
+    st.markdown("""
+        <div style='background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+            <h2 style='margin: 0; color: #1e40af; font-size: 1.75rem;'>📊 Security Dashboard</h2>
+            <p style='margin: 0.5rem 0 0 0; color: #6b7280;'>Real-time vulnerability analytics and risk assessment</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    if st.session_state.vulnerabilities and st.session_state.analysis_results:
+        # Prepare data for visualizations
+        vuln_data = []
+        for vuln_item in st.session_state.vulnerabilities:
+            vuln_id = vuln_item["id"]
+            analysis = st.session_state.analysis_results.get(vuln_id, {})
+            vuln_data.append({
+                "vuln_id": vuln_id,
+                "image": vuln_item["image"],
+                "severity": analysis.get("severity", "UNKNOWN"),
+                "classification": analysis.get("classification", "UNKNOWN"),
+                "detected_in": vuln_item.get("details", {}).get("detected_in", "Unknown"),
+                "confidence": analysis.get("confidence", 0),
+                "status": st.session_state.remediation_status.get(vuln_id, {}).get("status", "PENDING"),
+                "timestamp": vuln_item.get("timestamp", "")
+            })
+        
+        df_dash = pd.DataFrame(vuln_data)
+        
+        # Key Metrics Row
+        st.markdown("### 🎯 Key Metrics")
+        col1, col2, col3, col4, col5 = st.columns(5)
+        
+        total_vulns = len(df_dash)
+        critical_count = len(df_dash[df_dash["severity"] == "CRITICAL"])
+        high_count = len(df_dash[df_dash["severity"] == "HIGH"])
+        remediated = len(df_dash[df_dash["status"] == "REMEDIATED"])
+        pending = total_vulns - remediated
+        
+        with col1:
+            st.metric("Total Vulnerabilities", total_vulns, delta=None)
+        with col2:
+            st.metric("Critical", critical_count, delta=None, delta_color="inverse")
+        with col3:
+            st.metric("High", high_count, delta=None, delta_color="inverse")
+        with col4:
+            st.metric("Remediated", remediated, delta=f"+{remediated}")
+        with col5:
+            success_rate = (remediated / total_vulns * 100) if total_vulns > 0 else 0
+            st.metric("Success Rate", f"{success_rate:.1f}%")
+        
+        st.divider()
+        
+        # Charts Row 1: Severity and Classification
+        st.markdown("### 📈 Vulnerability Analysis")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Severity Distribution Pie Chart
+            severity_counts = df_dash["severity"].value_counts()
+            
+            # Professional color mapping for severity
+            color_map = {
+                'CRITICAL': '#dc2626',  # Enterprise red
+                'HIGH': '#f59e0b',      # Enterprise orange
+                'MEDIUM': '#eab308',    # Enterprise yellow
+                'LOW': '#10b981'        # Enterprise green
+            }
+            colors = [color_map.get(sev, '#6b7280') for sev in severity_counts.index]
+            
+            fig_severity = go.Figure(data=[go.Pie(
+                labels=severity_counts.index,
+                values=severity_counts.values,
+                marker=dict(
+                    colors=colors,
+                    line=dict(color='white', width=2)
+                ),
+                hole=0.45,
+                textinfo='label+percent',
+                textfont=dict(size=13, family='Inter', color='white'),
+                hovertemplate='<b>%{label}</b><br>Count: %{value}<br>Percentage: %{percent}<extra></extra>'
+            )])
+            fig_severity.update_layout(
+                title=dict(
+                    text="Severity Distribution",
+                    font=dict(size=16, family='Inter', color='#1f2937', weight=600)
+                ),
+                height=350,
+                showlegend=True,
+                margin=dict(t=50, b=20, l=20, r=20),
+                paper_bgcolor='white',
+                plot_bgcolor='white',
+                font=dict(family='Inter')
+            )
+            st.plotly_chart(fig_severity, use_container_width=True)
+        
+        with col2:
+            # Classification Distribution Pie Chart
+            classification_counts = df_dash["classification"].value_counts()
+            
+            # Professional classification colors
+            class_colors = ['#2563eb', '#7c3aed', '#059669', '#f59e0b']
+            
+            fig_classification = go.Figure(data=[go.Pie(
+                labels=classification_counts.index,
+                values=classification_counts.values,
+                marker=dict(
+                    colors=class_colors,
+                    line=dict(color='white', width=2)
+                ),
+                hole=0.45,
+                textinfo='label+percent',
+                textfont=dict(size=13, family='Inter', color='white'),
+                hovertemplate='<b>%{label}</b><br>Count: %{value}<br>Percentage: %{percent}<extra></extra>'
+            )])
+            fig_classification.update_layout(
+                title=dict(
+                    text="Vulnerability Classification",
+                    font=dict(size=16, family='Inter', color='#1f2937', weight=600)
+                ),
+                height=350,
+                showlegend=True,
+                margin=dict(t=50, b=20, l=20, r=20),
+                paper_bgcolor='white',
+                plot_bgcolor='white',
+                font=dict(family='Inter')
+            )
+            st.plotly_chart(fig_classification, use_container_width=True)
+        
+        st.divider()
+        
+        # Charts Row 2: Status and Layer Detection
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Remediation Status Bar Chart
+            status_counts = df_dash["status"].value_counts()
+            fig_status = go.Figure(data=[go.Bar(
+                x=status_counts.index,
+                y=status_counts.values,
+                marker=dict(
+                    color=['#10b981' if s == 'REMEDIATED' else '#3b82f6' for s in status_counts.index],
+                    line=dict(color='white', width=1)
+                ),
+                text=status_counts.values,
+                textposition='outside',
+                textfont=dict(size=14, family='Inter', weight=600),
+                hovertemplate='<b>%{x}</b><br>Count: %{y}<extra></extra>'
+            )])
+            fig_status.update_layout(
+                title=dict(
+                    text="Remediation Status",
+                    font=dict(size=16, family='Inter', color='#1f2937', weight=600)
+                ),
+                xaxis=dict(
+                    title="Status",
+                    titlefont=dict(size=13, family='Inter'),
+                    gridcolor='#f3f4f6'
+                ),
+                yaxis=dict(
+                    title="Count",
+                    titlefont=dict(size=13, family='Inter'),
+                    gridcolor='#f3f4f6'
+                ),
+                height=350,
+                showlegend=False,
+                margin=dict(t=50, b=50, l=50, r=50),
+                paper_bgcolor='white',
+                plot_bgcolor='#f9fafb',
+                font=dict(family='Inter')
+            )
+            st.plotly_chart(fig_status, use_container_width=True)
+        
+        with col2:
+            # Detected In Distribution
+            detected_counts = df_dash["detected_in"].value_counts()
+            fig_detected = go.Figure(data=[go.Bar(
+                x=detected_counts.index,
+                y=detected_counts.values,
+                marker=dict(
+                    color='#6366f1',
+                    line=dict(color='white', width=1)
+                ),
+                text=detected_counts.values,
+                textposition='outside',
+                textfont=dict(size=14, family='Inter', weight=600),
+                hovertemplate='<b>%{x}</b><br>Count: %{y}<extra></extra>'
+            )])
+            fig_detected.update_layout(
+                title=dict(
+                    text="Detection Layer Distribution",
+                    font=dict(size=16, family='Inter', color='#1f2937', weight=600)
+                ),
+                xaxis=dict(
+                    title="Layer",
+                    titlefont=dict(size=13, family='Inter'),
+                    gridcolor='#f3f4f6'
+                ),
+                yaxis=dict(
+                    title="Count",
+                    titlefont=dict(size=13, family='Inter'),
+                    gridcolor='#f3f4f6'
+                ),
+                height=350,
+                showlegend=False,
+                margin=dict(t=50, b=50, l=50, r=50),
+                paper_bgcolor='white',
+                plot_bgcolor='#f9fafb',
+                font=dict(family='Inter')
+            )
+            st.plotly_chart(fig_detected, use_container_width=True)
+        
+        st.divider()
+        
+        # Charts Row 3: Image Distribution and Confidence
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Top 10 Affected Images
+            image_counts = df_dash["image"].value_counts().head(10)
+            fig_images = go.Figure(data=[go.Bar(
+                y=image_counts.index,
+                x=image_counts.values,
+                orientation='h',
+                marker=dict(
+                    color='#8b5cf6',
+                    line=dict(color='white', width=1)
+                ),
+                text=image_counts.values,
+                textposition='outside',
+                textfont=dict(size=12, family='Inter', weight=600),
+                hovertemplate='<b>%{y}</b><br>Vulnerabilities: %{x}<extra></extra>'
+            )])
+            fig_images.update_layout(
+                title=dict(
+                    text="Top 10 Affected Images",
+                    font=dict(size=16, family='Inter', color='#1f2937', weight=600)
+                ),
+                xaxis=dict(
+                    title="Vulnerability Count",
+                    titlefont=dict(size=13, family='Inter'),
+                    gridcolor='#f3f4f6'
+                ),
+                yaxis=dict(
+                    title="Container Image",
+                    titlefont=dict(size=13, family='Inter')
+                ),
+                height=400,
+                showlegend=False,
+                margin=dict(t=50, b=50, l=200, r=50),
+                paper_bgcolor='white',
+                plot_bgcolor='#f9fafb',
+                font=dict(family='Inter')
+            )
+            st.plotly_chart(fig_images, use_container_width=True)
+        
+        with col2:
+            # Confidence Score Distribution
+            fig_confidence = go.Figure(data=[go.Histogram(
+                x=df_dash["confidence"],
+                nbinsx=10,
+                marker=dict(
+                    color='#14b8a6',
+                    line=dict(color='white', width=1)
+                ),
+                hovertemplate='Confidence: %{x}%<br>Count: %{y}<extra></extra>'
+            )])
+            fig_confidence.update_layout(
+                title=dict(
+                    text="Analysis Confidence Distribution",
+                    font=dict(size=16, family='Inter', color='#1f2937', weight=600)
+                ),
+                xaxis=dict(
+                    title="Confidence Score (%)",
+                    titlefont=dict(size=13, family='Inter'),
+                    gridcolor='#f3f4f6'
+                ),
+                yaxis=dict(
+                    title="Frequency",
+                    titlefont=dict(size=13, family='Inter'),
+                    gridcolor='#f3f4f6'
+                ),
+                height=400,
+                showlegend=False,
+                margin=dict(t=50, b=50, l=50, r=50),
+                paper_bgcolor='white',
+                plot_bgcolor='#f9fafb',
+                font=dict(family='Inter')
+            )
+            st.plotly_chart(fig_confidence, use_container_width=True)
+        
+        st.divider()
+        
+        # Severity by Classification Heatmap
+        st.markdown("""
+            <div style='background: white; padding: 1rem; border-radius: 12px; margin: 2rem 0 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+                <h3 style='margin: 0; color: #1e40af; font-size: 1.5rem;'>🔥 Risk Correlation Matrix</h3>
+                <p style='margin: 0.5rem 0 0 0; color: #6b7280; font-size: 0.9rem;'>Severity vs Classification Analysis</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        pivot_data = df_dash.groupby(['severity', 'classification']).size().reset_index(name='count')
+        pivot_table = pivot_data.pivot(index='severity', columns='classification', values='count').fillna(0)
+        
+        # Reorder severity for better visualization
+        severity_order = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
+        pivot_table = pivot_table.reindex([s for s in severity_order if s in pivot_table.index])
+        
+        fig_heatmap = go.Figure(data=go.Heatmap(
+            z=pivot_table.values,
+            x=pivot_table.columns,
+            y=pivot_table.index,
+            colorscale=[[0, '#fee2e2'], [0.25, '#fca5a5'], [0.5, '#f87171'], [0.75, '#dc2626'], [1, '#991b1b']],
+            text=pivot_table.values,
+            texttemplate='<b>%{text}</b>',
+            textfont={"size": 18, "family": "Inter", "color": "white"},
+            colorbar=dict(
+                title="Count",
+                titlefont=dict(family='Inter', size=13),
+                tickfont=dict(family='Inter')
+            ),
+            hovertemplate='<b>%{y} - %{x}</b><br>Count: %{z}<extra></extra>'
+        ))
+        fig_heatmap.update_layout(
+            title=dict(
+                text="",
+                font=dict(size=16, family='Inter', color='#1f2937', weight=600)
+            ),
+            xaxis=dict(
+                title="Classification Type",
+                titlefont=dict(size=13, family='Inter'),
+                side='bottom'
+            ),
+            yaxis=dict(
+                title="Severity Level",
+                titlefont=dict(size=13, family='Inter')
+            ),
+            height=400,
+            margin=dict(t=20, b=50, l=100, r=100),
+            paper_bgcolor='white',
+            plot_bgcolor='white',
+            font=dict(family='Inter')
+        )
+        st.plotly_chart(fig_heatmap, use_container_width=True)
+        
+        st.divider()
+        
+        # Risk Score Summary
+        st.markdown("""
+            <div style='background: white; padding: 1rem; border-radius: 12px; margin: 2rem 0 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+                <h3 style='margin: 0; color: #1e40af; font-size: 1.5rem;'>⚠️ Overall Risk Assessment</h3>
+                <p style='margin: 0.5rem 0 0 0; color: #6b7280; font-size: 0.9rem;'>Comprehensive security posture evaluation</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # Calculate risk score
+        risk_weights = {"CRITICAL": 10, "HIGH": 7, "MEDIUM": 4, "LOW": 1}
+        total_risk = sum(risk_weights.get(row["severity"], 0) for _, row in df_dash.iterrows())
+        max_possible_risk = total_vulns * 10
+        risk_percentage = (total_risk / max_possible_risk * 100) if max_possible_risk > 0 else 0
+        
+        col1, col2, col3 = st.columns([2, 1, 1])
+        
+        with col1:
+            # Professional Risk gauge
+            gauge_color = "#10b981" if risk_percentage < 40 else "#f59e0b" if risk_percentage < 70 else "#dc2626"
+            
+            fig_gauge = go.Figure(go.Indicator(
+                mode="gauge+number",
+                value=risk_percentage,
+                domain={'x': [0, 1], 'y': [0, 1]},
+                title={
+                    'text': "<b>Risk Score</b>",
+                    'font': {'size': 20, 'family': 'Inter', 'color': '#1f2937'}
+                },
+                number={
+                    'suffix': "%",
+                    'font': {'size': 48, 'family': 'Inter', 'weight': 700, 'color': gauge_color}
+                },
+                gauge={
+                    'axis': {
+                        'range': [None, 100],
+                        'tickwidth': 2,
+                        'tickcolor': "#e5e7eb",
+                        'tickfont': {'family': 'Inter', 'size': 12}
+                    },
+                    'bar': {'color': gauge_color, 'thickness': 0.75},
+                    'bgcolor': "white",
+                    'borderwidth': 3,
+                    'bordercolor': "#e5e7eb",
+                    'steps': [
+                        {'range': [0, 40], 'color': '#d1fae5'},
+                        {'range': [40, 70], 'color': '#fef3c7'},
+                        {'range': [70, 100], 'color': '#fee2e2'}
+                    ],
+                    'threshold': {
+                        'line': {'color': gauge_color, 'width': 6},
+                        'thickness': 0.8,
+                        'value': risk_percentage
+                    }
+                }
+            ))
+            fig_gauge.update_layout(
+                height=320,
+                margin=dict(t=60, b=20, l=40, r=40),
+                paper_bgcolor='white',
+                font=dict(family='Inter')
+            )
+            st.plotly_chart(fig_gauge, use_container_width=True)
+        
+        with col2:
+            st.markdown("""
+                <div style='background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); 
+                            padding: 1.5rem; border-radius: 12px; height: 100%; 
+                            border: 2px solid #3b82f6;'>
+                    <p style='margin: 0; color: #1e40af; font-size: 0.875rem; font-weight: 600; 
+                              text-transform: uppercase; letter-spacing: 0.5px;'>RISK METRICS</p>
+                    <p style='margin: 1rem 0 0 0; color: #1f2937; font-size: 2rem; font-weight: 700;'>{}/{}</p>
+                    <p style='margin: 0.25rem 0 0 0; color: #6b7280; font-size: 0.875rem;'>Total Risk Points</p>
+                    <hr style='border: none; height: 1px; background: #93c5fd; margin: 1rem 0;'>
+                    <p style='margin: 0; color: #1f2937; font-size: 1.5rem; font-weight: 700;'>{:.1f}</p>
+                    <p style='margin: 0.25rem 0 0 0; color: #6b7280; font-size: 0.875rem;'>Avg. per Vulnerability</p>
+                </div>
+            """.format(total_risk, max_possible_risk, total_risk/total_vulns if total_vulns > 0 else 0), 
+            unsafe_allow_html=True)
+        
+        with col3:
+            if risk_percentage < 40:
+                st.markdown("""
+                    <div style='background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); 
+                                padding: 1.5rem; border-radius: 12px; height: 100%; 
+                                border: 2px solid #10b981;'>
+                        <p style='margin: 0; color: #065f46; font-size: 2rem; font-weight: 700;'>✅ LOW</p>
+                        <p style='margin: 0.5rem 0 0 0; color: #047857; font-size: 0.95rem; font-weight: 500;'>
+                            System Status</p>
+                        <hr style='border: none; height: 1px; background: #6ee7b7; margin: 1rem 0;'>
+                        <p style='margin: 0; color: #065f46; font-size: 0.875rem; line-height: 1.5;'>
+                            ✓ System is secure<br>
+                            ✓ Minimal risk exposure<br>
+                            ✓ Continue monitoring
+                        </p>
+                    </div>
+                """, unsafe_allow_html=True)
+            elif risk_percentage < 70:
+                st.markdown("""
+                    <div style='background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); 
+                                padding: 1.5rem; border-radius: 12px; height: 100%; 
+                                border: 2px solid #f59e0b;'>
+                        <p style='margin: 0; color: #92400e; font-size: 2rem; font-weight: 700;'>⚠️ MEDIUM</p>
+                        <p style='margin: 0.5rem 0 0 0; color: #b45309; font-size: 0.95rem; font-weight: 500;'>
+                            System Status</p>
+                        <hr style='border: none; height: 1px; background: #fde68a; margin: 1rem 0;'>
+                        <p style='margin: 0; color: #92400e; font-size: 0.875rem; line-height: 1.5;'>
+                            ⚡ Action needed<br>
+                            ⚡ Address high severity<br>
+                            ⚡ Plan remediation
+                        </p>
+                    </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                    <div style='background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); 
+                                padding: 1.5rem; border-radius: 12px; height: 100%; 
+                                border: 2px solid #dc2626;'>
+                        <p style='margin: 0; color: #991b1b; font-size: 2rem; font-weight: 700;'>🚨 HIGH</p>
+                        <p style='margin: 0.5rem 0 0 0; color: #b91c1c; font-size: 0.95rem; font-weight: 500;'>
+                            System Status</p>
+                        <hr style='border: none; height: 1px; background: #fca5a5; margin: 1rem 0;'>
+                        <p style='margin: 0; color: #991b1b; font-size: 0.875rem; line-height: 1.5;'>
+                            🔴 Critical level<br>
+                            🔴 Immediate action<br>
+                            🔴 Remediate now
+                        </p>
+                    </div>
+                """, unsafe_allow_html=True)
+        
+    else:
+        st.info("📊 No vulnerability data available yet. Start by analyzing vulnerabilities in the 'Analyze' or 'Bulk Upload' tabs.")
+        
+        # Show sample dashboard
+        st.markdown("### 📋 Dashboard Preview")
+        st.markdown("""
+        Once you analyze vulnerabilities, this dashboard will display:
+        
+        **Key Metrics:**
+        - Total vulnerabilities, Critical/High counts
+        - Remediation status and success rate
+        
+        **Visualizations:**
+        - 📊 Severity distribution pie chart
+        - 🎯 Classification breakdown
+        - 📈 Remediation status progress
+        - 🖼️ Top affected images
+        - 🔥 Risk heatmap (Severity vs Classification)
+        - ⚠️ Overall risk score gauge
+        
+        **Use the 'Analyze' or 'Bulk Upload' tabs to get started!**
+        """)
+
+with tab2:
     st.subheader("Enter Vulnerability Details")
     
     col1, col2 = st.columns(2)
@@ -448,7 +1339,7 @@ with tab1:
                 st.error(f"❌ Error: {str(e)}")
 
 # Display results
-with tab1:
+with tab2:
     if st.session_state.vulnerabilities:
         st.divider()
         st.subheader("📋 Analysis Results")
@@ -526,8 +1417,8 @@ with tab1:
                                 del st.session_state.analysis_results[vuln_id]
                             st.rerun()
 
-with tab2:
-    st.subheader("📊 Vulnerability History")
+with tab3:
+    st.subheader("📈 Vulnerability History")
     
     if st.session_state.vulnerabilities:
         col1, col2, col3, col4 = st.columns(4)
@@ -556,7 +1447,7 @@ with tab2:
     else:
         st.info("ℹ️ No vulnerabilities analyzed yet")
 
-with tab3:
+with tab4:
     st.subheader("📤 Bulk Upload & Analyze")
     st.write("Upload a CSV file with multiple vulnerabilities to analyze them all at once.")
     
@@ -607,9 +1498,11 @@ with tab3:
                 for idx, row in df.iterrows():
                     progress_bar.progress((idx + 1) / len(df))
                     
-                    # Auto-detect if enabled and detected_in is missing
-                    detected_in_value = row.get("detected_in", "Unknown")
-                    if auto_detect and (detected_in_value == "Unknown" or pd.isna(detected_in_value)):
+                    # Auto-detect if enabled and detected_in is missing/empty
+                    detected_in_value = row.get("detected_in", "")
+                    
+                    # Check if detected_in is missing, empty, or NaN
+                    if auto_detect and (not detected_in_value or pd.isna(detected_in_value) or str(detected_in_value).strip() == ""):
                         vuln_id = row.get("vuln_id", "")
                         if vuln_id and str(vuln_id).startswith("CVE-"):
                             detected_in_value = detect_vulnerability_type_from_cve(vuln_id)
@@ -618,7 +1511,7 @@ with tab3:
                         "image_name": row.get("image_name", "Unknown"),
                         "vuln_id": row.get("vuln_id", "Unknown"),
                         "description": row.get("description", "Unknown"),
-                        "detected_in": detected_in_value,
+                        "detected_in": detected_in_value if detected_in_value else "Unknown",
                         "current_version": row.get("current_version", ""),
                         "affected_component": row.get("affected_component", "")
                     }
@@ -636,14 +1529,18 @@ with tab3:
                             "details": vulnerability_details
                         })
                         
+                        # Extract first resolution step for summary
+                        resolution_steps = analysis.get("resolution_steps", [])
+                        first_step = resolution_steps[0] if resolution_steps else "See details"
+                        
                         # Add to results list
                         results_list.append({
                             "Image": vulnerability_details["image_name"],
                             "Vulnerability ID": vuln_id,
                             "Detected In": vulnerability_details["detected_in"],
-                            "Classification": analysis.get("classification", "UNKNOWN"),
                             "Severity": analysis.get("severity", "UNKNOWN"),
-                            "Confidence": f"{analysis.get('confidence', 0)}%",
+                            "Classification": analysis.get("classification", "UNKNOWN"),
+                            "First Resolution Step": first_step,
                             "Fix Time": analysis.get("estimated_fix_time", "Unknown")
                         })
                     except Exception as e:
@@ -665,6 +1562,86 @@ with tab3:
                     mime="text/csv",
                     use_container_width=True
                 )
+                
+                st.divider()
+                
+                # Detailed Remediation Section
+                st.subheader("🔧 Detailed Remediation Steps")
+                st.info("💡 Click on each vulnerability to see detailed fix instructions")
+                
+                for vuln_item in st.session_state.vulnerabilities[-len(results_list):]:
+                    vuln_id = vuln_item["id"]
+                    analysis = st.session_state.analysis_results.get(vuln_id, {})
+                    
+                    severity = analysis.get("severity", "UNKNOWN")
+                    severity_emoji = {"CRITICAL": "🔴", "HIGH": "🟠", "MEDIUM": "🟡", "LOW": "🟢"}.get(severity, "⚪")
+                    
+                    with st.expander(f"{severity_emoji} **{vuln_id}** - {vuln_item['image']} ({severity})"):
+                        col1, col2 = st.columns([2, 1])
+                        
+                        with col1:
+                            st.markdown("**📋 Root Cause:**")
+                            st.write(analysis.get("root_cause", "Not available"))
+                            
+                            st.markdown("**✅ Resolution Steps:**")
+                            resolution_steps = analysis.get("resolution_steps", [])
+                            if resolution_steps:
+                                for i, step in enumerate(resolution_steps, 1):
+                                    st.markdown(f"{i}. {step}")
+                            else:
+                                st.write("No resolution steps available")
+                            
+                            st.markdown("**🛡️ Prevention:**")
+                            st.write(analysis.get("prevention", "Not available"))
+                        
+                        with col2:
+                            st.metric("Severity", severity)
+                            st.metric("Fix Time", analysis.get("estimated_fix_time", "Unknown"))
+                            st.metric("Classification", analysis.get("classification", "UNKNOWN"))
+                
+                st.divider()
+                
+                # Auto-Fix Script Generation
+                st.subheader("🤖 Generate Remediation Script")
+                st.info("Generate an automated script to fix all vulnerabilities")
+                
+                if st.button("📝 Generate Fix Script", use_container_width=True):
+                    script_lines = ["#!/bin/bash", "", "# Auto-generated Vulnerability Remediation Script", 
+                                   f"# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", "", 
+                                   "echo '🔧 Starting vulnerability remediation...'", ""]
+                    
+                    for vuln_item in st.session_state.vulnerabilities[-len(results_list):]:
+                        vuln_id = vuln_item["id"]
+                        image_name = vuln_item["image"]
+                        analysis = st.session_state.analysis_results.get(vuln_id, {})
+                        
+                        script_lines.append(f"# Fix for {vuln_id} in {image_name}")
+                        classification = analysis.get("classification", "")
+                        
+                        if "BASE" in classification.upper():
+                            script_lines.append(f"echo '🔄 Updating base image for {image_name}...'")
+                            script_lines.append(f"# docker pull {image_name.split(':')[0]}:latest")
+                            script_lines.append(f"# docker tag {image_name.split(':')[0]}:latest {image_name}")
+                        else:
+                            script_lines.append(f"echo '📦 Updating dependencies for {image_name}...'")
+                            script_lines.append(f"# Rebuild image with updated dependencies")
+                            script_lines.append(f"# docker build -t {image_name} .")
+                        
+                        script_lines.append("")
+                    
+                    script_lines.append("echo '✅ Remediation complete!'")
+                    
+                    remediation_script = "\n".join(script_lines)
+                    
+                    st.code(remediation_script, language="bash")
+                    
+                    st.download_button(
+                        label="💾 Download Remediation Script",
+                        data=remediation_script,
+                        file_name=f"fix_vulnerabilities_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sh",
+                        mime="text/x-shellscript",
+                        use_container_width=True
+                    )
                 
                 st.rerun()
         
@@ -698,7 +1675,7 @@ with tab3:
         use_container_width=True
     )
 
-with tab4:
+with tab5:
     st.subheader("📖 Vulnerability Classification Guide")
     
     col1, col2 = st.columns(2)
@@ -741,4 +1718,4 @@ with tab4:
         """)
 
 st.divider()
-st.caption("🔐 Container Vulnerability Analyzer | Powered by Anthropic Claude API")
+st.caption("🔐 Container Vulnerability Analyzer | Powered by AI")
