@@ -67,29 +67,46 @@ def initialize_claude_client():
 
 @st.cache_data(ttl=86400)  # Cache for 24 hours
 def fetch_cve_data_from_nvd(cve_id: str) -> dict:
-    """Fetch CVE data from NVD API"""
+    """Fetch CVE data from NVD API 2.0"""
     
     try:
-        # NVD API endpoint
-        url = f"https://services.nvd.nist.gov/rest/json/cves/1.0/{cve_id}"
+        # NVD API 2.0 endpoint
+        url = f"https://services.nvd.nist.gov/rest/json/cves/2.0?cveId={cve_id}"
+        
+        # Get API key from secrets
+        nvd_api_key = st.secrets.get("NVD_API_KEY")
         
         headers = {
             "User-Agent": "Container-Vulnerability-Analyzer/1.0"
         }
+        
+        # Add API key to headers if available
+        if nvd_api_key:
+            headers["apiKey"] = nvd_api_key
         
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
         
         data = response.json()
         
-        if data.get("result") and data["result"].get("CVE_Items"):
-            cve_item = data["result"]["CVE_Items"][0]
+        # API 2.0 response structure
+        if data.get("vulnerabilities") and len(data["vulnerabilities"]) > 0:
+            cve_item = data["vulnerabilities"][0]["cve"]
+            
+            # Extract description
+            descriptions = cve_item.get("descriptions", [])
+            description = ""
+            for desc in descriptions:
+                if desc.get("lang") == "en":
+                    description = desc.get("value", "")
+                    break
+            
             return {
                 "status": "success",
                 "cve_id": cve_id,
-                "description": cve_item.get("cve", {}).get("description", {}).get("description_data", [{}])[0].get("value", ""),
-                "affected_versions": cve_item.get("impact", {}),
-                "references": cve_item.get("cve", {}).get("references", {}).get("reference_data", []),
+                "description": description,
+                "metrics": cve_item.get("metrics", {}),
+                "references": cve_item.get("references", []),
                 "raw_data": cve_item
             }
         else:
