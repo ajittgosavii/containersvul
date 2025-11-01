@@ -5,6 +5,7 @@ from datetime import datetime
 import re
 import pandas as pd
 from io import StringIO
+import requests
 
 # Configure Streamlit page
 st.set_page_config(
@@ -64,45 +65,128 @@ def initialize_claude_client():
     return anthropic.Anthropic(api_key=api_key)
 
 
-def detect_vulnerability_type_from_cve(cve_id: str) -> str:
-    """Auto-detect if vulnerability is BASE_CONTAINER or APPLICATION_LEVEL based on CVE ID"""
+@st.cache_data(ttl=86400)  # Cache for 24 hours
+def fetch_cve_data_from_nvd(cve_id: str) -> dict:
+    """Fetch CVE data from NVD API"""
     
-    client = initialize_claude_client()
-    
-    prompt = f"""You are a security expert. Based on the CVE ID: {cve_id}, determine if this vulnerability is:
-    
-1. BASE_CONTAINER - Affects the base OS, kernel, system libraries (e.g., OpenSSL, glibc, Linux kernel)
-2. APPLICATION_LEVEL - Affects specific applications, frameworks, or libraries (e.g., Django, Log4j, npm packages)
-
-Return ONLY one of these values: BASE_CONTAINER or APPLICATION_LEVEL
-
-If you don't know this CVE, make an educated guess based on common patterns.
-
-Examples:
-- CVE-2021-3129 (OpenSSL) → BASE_CONTAINER
-- CVE-2023-38545 (Log4Shell) → APPLICATION_LEVEL
-- CVE-2022-0001 (Linux kernel) → BASE_CONTAINER
-- CVE-2023-44487 (HTTP/2 vulnerability) → BASE_CONTAINER
-
-Return ONLY the classification, nothing else."""
-
     try:
-        message = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
-            max_tokens=50,
-            messages=[{"role": "user", "content": prompt}]
-        )
+        # NVD API endpoint
+        url = f"https://services.nvd.nist.gov/rest/json/cves/1.0/{cve_id}"
         
-        response = message.content[0].text.strip().upper()
+        headers = {
+            "User-Agent": "Container-Vulnerability-Analyzer/1.0"
+        }
         
-        if "APPLICATION" in response:
-            return "Application Layer"
-        elif "BASE" in response:
-            return "Base Layer"
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        
+        if data.get("result") and data["result"].get("CVE_Items"):
+            cve_item = data["result"]["CVE_Items"][0]
+            return {
+                "status": "success",
+                "cve_id": cve_id,
+                "description": cve_item.get("cve", {}).get("description", {}).get("description_data", [{}])[0].get("value", ""),
+                "affected_versions": cve_item.get("impact", {}),
+                "references": cve_item.get("cve", {}).get("references", {}).get("reference_data", []),
+                "raw_data": cve_item
+            }
         else:
-            return "Unknown"
-    except:
-        return "Unknown"
+            return {"status": "not_found", "cve_id": cve_id}
+            
+    except requests.exceptions.Timeout:
+        return {"status": "timeout", "cve_id": cve_id, "error": "NVD API timeout"}
+    except requests.exceptions.RequestException as e:
+        return {"status": "error", "cve_id": cve_id, "error": str(e)}
+
+
+def detect_vulnerability_type_from_cve(cve_id: str) -> str:
+    """Auto-detect vulnerability type by fetching from NVD API and using Claude for classification"""
+    
+    st.info(f"🔍 Fetching CVE data for {cve_id} from NVD...")
+    
+    # Fetch from NVD API
+    nvd_data = fetch_cve_data_from_nvd(cve_id)
+    
+    if nvd_data["status"] == "success":
+        cve_description = nvd_data.get("description", "")
+        
+        st.success(f"✅ Found: {cve_id} in NVD Database")
+        
+        # Use Claude to classify based on real NVD data
+        client = initialize_claude_client()
+        
+        prompt = f"""Based on this CVE data from NVD (National Vulnerability Database), classify the vulnerability:
+
+CVE ID: {cve_id}
+Description: {cve_description}
+
+Determine if this is:
+- BASE_CONTAINER: Affects OS, kernel, system libraries (OpenSSL, glibc, Linux kernel, curl, wget, etc.)
+- APPLICATION_LEVEL: Affects applications, frameworks, libraries (Django, Log4j, Node.js, Python packages, etc.)
+
+Respond with ONLY "BASE_CONTAINER" or "APPLICATION_LEVEL". Nothing else."""
+
+        try:
+            message = client.messages.create(
+                model="claude-3-5-sonnet-20241022",
+                max_tokens=20,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            
+            response = message.content[0].text.strip().upper()
+            
+            if "APPLICATION" in response:
+                return "Application Layer"
+            elif "BASE" in response:
+                return "Base Layer"
+            else:
+                return "Base Layer"
+        except Exception as e:
+            st.warning(f"⚠️ Claude classification error: {str(e)}")
+            return "Base Layer"
+    
+    elif nvd_data["status"] == "not_found":
+        st.warning(f"⚠️ CVE {cve_id} not found in NVD API - Using Claude for best guess")
+        
+        # Fallback: Use Claude without NVD data
+        client = initialize_claude_client()
+        
+        prompt = f"""Classify this CVE: {cve_id}
+
+Is this a BASE_CONTAINER or APPLICATION_LEVEL vulnerability?
+
+BASE_CONTAINER = OS, kernel, system libraries (OpenSSL, glibc, Linux, curl, wget)
+APPLICATION_LEVEL = Applications, frameworks, libraries (Django, Log4j, Node.js, Python packages)
+
+Respond with ONLY "BASE_CONTAINER" or "APPLICATION_LEVEL"."""
+
+        try:
+            message = client.messages.create(
+                model="claude-3-5-sonnet-20241022",
+                max_tokens=20,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            
+            response = message.content[0].text.strip().upper()
+            
+            if "APPLICATION" in response:
+                return "Application Layer"
+            elif "BASE" in response:
+                return "Base Layer"
+            else:
+                return "Base Layer"
+        except:
+            return "Base Layer"
+    
+    elif nvd_data["status"] == "timeout":
+        st.error("❌ NVD API timeout - Using safe default")
+        return "Base Layer"
+    
+    else:
+        st.error(f"❌ Error fetching from NVD: {nvd_data.get('error', 'Unknown error')}")
+        return "Base Layer"
 
 
 def analyze_vulnerability_with_claude(vulnerability_details: dict) -> dict:
