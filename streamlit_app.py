@@ -248,8 +248,12 @@ st.markdown("""
     
     /* Sidebar Styling - Light Professional Theme */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-        border-right: 1px solid #e2e8f0;
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+        border-right: 1px solid #e2e8f0 !important;
+    }
+    
+    [data-testid="stSidebar"] > div:first-child {
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
     }
     
     [data-testid="stSidebar"] * {
@@ -260,14 +264,45 @@ st.markdown("""
         color: #334155 !important;
     }
     
+    [data-testid="stSidebar"] .stMarkdown strong {
+        color: #1e40af !important;
+    }
+    
     [data-testid="stSidebar"] h3 {
         color: #1e40af !important;
-        font-weight: 600;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
     }
     
     [data-testid="stSidebar"] h4 {
         color: #3b82f6 !important;
-        font-weight: 600;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+    }
+    
+    [data-testid="stSidebar"] .stMetric {
+        background: white !important;
+        padding: 0.75rem !important;
+        border-radius: 8px !important;
+        margin-bottom: 0.5rem !important;
+        border-left: 3px solid #60a5fa !important;
+    }
+    
+    [data-testid="stSidebar"] .stMetric label {
+        color: #6b7280 !important;
+        font-size: 0.8rem !important;
+    }
+    
+    [data-testid="stSidebar"] [data-testid="stMetricValue"] {
+        color: #1f2937 !important;
+        font-size: 1.5rem !important;
+    }
+    
+    [data-testid="stSidebar"] hr {
+        border: none !important;
+        height: 1px !important;
+        background: #e2e8f0 !important;
+        margin: 1rem 0 !important;
     }
     
     /* Divider Styling */
@@ -688,28 +723,24 @@ with st.sidebar:
     st.markdown("### ⚙️ System Configuration")
     st.markdown("---")
     
-    # API Status Section
+    # API Status Section with proper HTML alignment
     st.markdown("#### 🔌 API Connectivity")
     anthropic_status = st.secrets.get("ANTHROPIC_API_KEY")
     nvd_status = st.secrets.get("NVD_API_KEY")
     
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        st.write("Claude AI")
-    with col2:
-        if anthropic_status:
-            st.success("✓")
-        else:
-            st.error("✗")
-    
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        st.write("NVD Database")
-    with col2:
-        if nvd_status:
-            st.success("✓")
-        else:
-            st.error("✗")
+    # Use HTML table for perfect alignment
+    st.markdown(f"""
+        <div style='padding: 0.5rem 0;'>
+            <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;'>
+                <span style='color: #334155; font-weight: 500;'>Claude AI</span>
+                <span style='font-size: 1.2rem;'>{'✅' if anthropic_status else '❌'}</span>
+            </div>
+            <div style='display: flex; justify-content: space-between; align-items: center;'>
+                <span style='color: #334155; font-weight: 500;'>NVD Database</span>
+                <span style='font-size: 1.2rem;'>{'✅' if nvd_status else '❌'}</span>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
     
     st.markdown("---")
     
@@ -730,9 +761,9 @@ with st.sidebar:
     
     # System Info
     st.markdown("#### ℹ️ System Info")
-    st.caption(f"**Version:** 2.0 Enterprise")
-    st.caption(f"**Model:** Claude Sonnet 4.5")
-    st.caption(f"**Last Updated:** Nov 2025")
+    st.caption("**Version:** 2.2 Light Theme")
+    st.caption("**Model:** Claude Sonnet 4.5")
+    st.caption("**Last Updated:** Nov 2025")
     
     st.markdown("---")
     
@@ -1279,15 +1310,7 @@ with tab2:
             ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
         )
         
-        # Auto-detect vulnerability type from CVE ID
-        detected_type = "Base Layer"
-        if vuln_id and vuln_id.strip():
-            if st.button("🔍 Auto-Detect Type", key="auto_detect_btn", help="Analyze CVE to auto-populate type"):
-                with st.spinner("Analyzing CVE..."):
-                    detected_type = detect_vulnerability_type_from_cve(vuln_id)
-                    st.session_state.detected_type = detected_type
-                    st.success(f"✅ Detected: {detected_type}")
-        
+        # Auto-detect section with better layout
         detected_type = st.session_state.get("detected_type", "Base Layer")
         
         try:
@@ -1299,8 +1322,18 @@ with tab2:
             "Detected In (Auto-filled ✨)",
             ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
             index=default_index,
-            help="Auto-detected from CVE - Click button above to detect, or change manually"
+            help="Auto-detected from CVE - Click button below to detect, or select manually"
         )
+    
+    # Auto-detect button in its own row for better alignment
+    if vuln_id and vuln_id.strip():
+        if st.button("🔍 Auto-Detect Vulnerability Type", key="auto_detect_btn", help="Analyze CVE to automatically detect vulnerability type", use_container_width=True):
+            with st.spinner("Analyzing CVE..."):
+                detected_type = detect_vulnerability_type_from_cve(vuln_id)
+                st.session_state.detected_type = detected_type
+                st.success(f"✅ Detected: {detected_type}")
+                st.rerun()
+    
     
     description = st.text_area(
         "Vulnerability Description *",
