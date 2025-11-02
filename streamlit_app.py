@@ -1296,39 +1296,36 @@ with tab1:
         **Use the 'Analyze' or 'Bulk Upload' tabs to get started!**
         """)
 
+# COPY-PASTE THIS ENTIRE SECTION
+# Replace your entire "with tab2:" section with this code
+
 with tab2:
     st.subheader("Enter Vulnerability Details")
     
-    # First row: Image Name and Severity
+    # Row 1: Image Name and Severity
     col1, col2 = st.columns(2)
-    
     with col1:
         image_name = st.text_input(
             "Image Name *",
             placeholder="e.g., nginx:latest",
             help="Full container image name with tag"
         )
-    
     with col2:
         severity_hint = st.selectbox(
             "Severity Hint",
             ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
         )
     
-    # Second row: CVE ID and Detected In (NO BUTTON HERE!)
+    # Row 2: CVE ID and Detected In (NO BUTTON HERE!)
     col1, col2 = st.columns(2)
-    
     with col1:
         vuln_id = st.text_input(
             "CVE ID *",
             placeholder="e.g., CVE-2024-1234",
-            help="CVE or vendor ID - Auto-detection enabled! ✨"
+            help="CVE or vendor ID"
         )
-    
     with col2:
-        # Get detected type from session state
         detected_type = st.session_state.get("detected_type", "Base Layer")
-        
         try:
             default_index = ["Base Layer", "Application Layer", "Dependencies", "Configuration"].index(detected_type)
         except:
@@ -1338,18 +1335,17 @@ with tab2:
             "Detected In",
             ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
             index=default_index,
-            help="Auto-detected from CVE - Click Auto-Detect button below after entering CVE"
+            help="Where the vulnerability was detected"
         )
     
-    st.markdown("")  # Add spacing
-    
+    # Description (full width)
     description = st.text_area(
         "Vulnerability Description *",
         placeholder="Describe the vulnerability...",
         height=100
     )
     
-    # Third row: Version and Component
+    # Row 3: Version and Component
     col1, col2 = st.columns(2)
     with col1:
         current_version = st.text_input(
@@ -1362,6 +1358,40 @@ with tab2:
             placeholder="e.g., OpenSSL"
         )
     
+    # Auto-detect section at the VERY END
+    st.markdown("---")
+    st.markdown("##### 🤖 Optional: AI Auto-Detection")
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.caption("Use AI to automatically detect vulnerability type from CVE database")
+    with col2:
+        if vuln_id and vuln_id.strip():
+            if st.button("🔍 Detect", key="auto_detect_btn", help="Auto-detect type"):
+                with st.spinner("Analyzing..."):
+                    detected_type = detect_vulnerability_type_from_cve(vuln_id)
+                    st.session_state.detected_type = detected_type
+                    st.success(f"✅ {detected_type}")
+                    st.rerun()
+        else:
+            st.button("🔍 Detect", key="auto_detect_btn_disabled", disabled=True, help="Enter CVE ID first")
+    
+    # Main analyze button
+    st.divider()
+    if st.button("🚀 Analyze Vulnerability", type="primary", width="stretch"):
+        if not image_name or not vuln_id or not description:
+            st.error("❌ Please fill in all required fields (*)")
+        else:
+            vulnerability_details = {
+                "image_name": image_name,
+                "vuln_id": vuln_id,
+                "description": description,
+                "detected_in": detected_in,
+                "current_version": current_version,
+                "affected_component": affected_component
+            }
+            
+            # Continue with your existing analysis code here...
     # Auto-detect button - at the very bottom so it doesn't interrupt dropdown flow
     st.markdown("---")
     st.markdown("### 🤖 AI-Powered Auto-Detection")
