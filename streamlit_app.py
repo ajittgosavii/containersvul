@@ -31,25 +31,24 @@ st.markdown("""
     
     /* Main Background */
     .main {
-        background: #ffffff;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
     }
     
     /* Hide Streamlit Branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Professional Header - Light Theme */
+    /* Professional Header */
     .header-container {
-        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
         padding: 2rem 3rem;
         border-radius: 12px;
         margin-bottom: 2rem;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-        border: 1px solid #bfdbfe;
+        box-shadow: 0 10px 25px rgba(30, 58, 138, 0.15);
     }
     
     .header-title {
-        color: #1e40af;
+        color: white;
         font-size: 2rem;
         font-weight: 700;
         margin: 0;
@@ -57,7 +56,7 @@ st.markdown("""
     }
     
     .header-subtitle {
-        color: #3b82f6;
+        color: #93c5fd;
         font-size: 1rem;
         font-weight: 400;
         margin-top: 0.5rem;
@@ -85,7 +84,7 @@ st.markdown("""
         padding: 1.5rem;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        border-left: 4px solid #60a5fa;
+        border-left: 4px solid #2563eb;
     }
     
     .stMetric label {
@@ -128,14 +127,14 @@ st.markdown("""
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%) !important;
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
         color: white !important;
-        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
     
     /* Professional Buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
         color: white;
         border: none;
         border-radius: 8px;
@@ -143,13 +142,13 @@ st.markdown("""
         font-weight: 600;
         font-size: 0.95rem;
         transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         letter-spacing: 0.3px;
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
         transform: translateY(-2px);
     }
     
@@ -167,17 +166,8 @@ st.markdown("""
     .stTextInput > div > div > input:focus,
     .stSelectbox > div > div > div:focus,
     .stTextArea > div > div > textarea:focus {
-        border-color: #60a5fa;
-        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
-    }
-    
-    /* Smaller font for form labels */
-    .stSelectbox label,
-    .stTextInput label,
-    .stTextArea label {
-        font-size: 0.875rem !important;
-        font-weight: 500 !important;
-        color: #374151 !important;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
     
     /* Severity Badges */
@@ -255,63 +245,17 @@ st.markdown("""
         border-color: #2563eb;
     }
     
-    /* Sidebar Styling - Light Professional Theme */
+    /* Sidebar Styling */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
-        border-right: 1px solid #e2e8f0 !important;
-    }
-    
-    [data-testid="stSidebar"] > div:first-child {
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+        background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
     }
     
     [data-testid="stSidebar"] * {
-        color: #334155 !important;
+        color: white !important;
     }
     
     [data-testid="stSidebar"] .stMarkdown {
-        color: #334155 !important;
-    }
-    
-    [data-testid="stSidebar"] .stMarkdown strong {
-        color: #1e40af !important;
-    }
-    
-    [data-testid="stSidebar"] h3 {
-        color: #1e40af !important;
-        font-weight: 600 !important;
-        font-size: 1.1rem !important;
-    }
-    
-    [data-testid="stSidebar"] h4 {
-        color: #3b82f6 !important;
-        font-weight: 600 !important;
-        font-size: 0.95rem !important;
-    }
-    
-    [data-testid="stSidebar"] .stMetric {
-        background: white !important;
-        padding: 0.75rem !important;
-        border-radius: 8px !important;
-        margin-bottom: 0.5rem !important;
-        border-left: 3px solid #60a5fa !important;
-    }
-    
-    [data-testid="stSidebar"] .stMetric label {
-        color: #6b7280 !important;
-        font-size: 0.8rem !important;
-    }
-    
-    [data-testid="stSidebar"] [data-testid="stMetricValue"] {
-        color: #1f2937 !important;
-        font-size: 1.5rem !important;
-    }
-    
-    [data-testid="stSidebar"] hr {
-        border: none !important;
-        height: 1px !important;
-        background: #e2e8f0 !important;
-        margin: 1rem 0 !important;
+        color: white !important;
     }
     
     /* Divider Styling */
@@ -344,9 +288,9 @@ st.markdown("""
         transform: translateY(-2px);
     }
     
-    /* Progress Bar - Light Theme */
+    /* Progress Bar */
     .stProgress > div > div {
-        background: linear-gradient(90deg, #60a5fa, #3b82f6);
+        background: linear-gradient(90deg, #2563eb, #1e40af);
         border-radius: 8px;
     }
     
@@ -360,13 +304,13 @@ st.markdown("""
     }
     
     [data-testid="stFileUploader"]:hover {
-        border-color: #60a5fa;
+        border-color: #2563eb;
         background: #f8fafc;
     }
     
-    /* Spinner - Light Theme */
+    /* Spinner */
     .stSpinner > div {
-        border-top-color: #60a5fa !important;
+        border-top-color: #2563eb !important;
     }
     
     /* Section Headers */
@@ -405,7 +349,7 @@ st.markdown("""
         color: #374151;
     }
     
-    /* Professional Scrollbar - Light Theme */
+    /* Professional Scrollbar */
     ::-webkit-scrollbar {
         width: 10px;
         height: 10px;
@@ -417,12 +361,12 @@ st.markdown("""
     }
     
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #93c5fd, #60a5fa);
+        background: linear-gradient(135deg, #2563eb, #1e40af);
         border-radius: 5px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #60a5fa, #3b82f6);
+        background: linear-gradient(135deg, #1e40af, #1e3a8a);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -732,24 +676,28 @@ with st.sidebar:
     st.markdown("### ⚙️ System Configuration")
     st.markdown("---")
     
-    # API Status Section with proper HTML alignment
+    # API Status Section
     st.markdown("#### 🔌 API Connectivity")
     anthropic_status = st.secrets.get("ANTHROPIC_API_KEY")
     nvd_status = st.secrets.get("NVD_API_KEY")
     
-    # Use HTML table for perfect alignment
-    st.markdown(f"""
-        <div style='padding: 0.5rem 0;'>
-            <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;'>
-                <span style='color: #334155; font-weight: 500;'>Claude AI</span>
-                <span style='font-size: 1.2rem;'>{'✅' if anthropic_status else '❌'}</span>
-            </div>
-            <div style='display: flex; justify-content: space-between; align-items: center;'>
-                <span style='color: #334155; font-weight: 500;'>NVD Database</span>
-                <span style='font-size: 1.2rem;'>{'✅' if nvd_status else '❌'}</span>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.write("Claude AI")
+    with col2:
+        if anthropic_status:
+            st.success("✓")
+        else:
+            st.error("✗")
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.write("NVD Database")
+    with col2:
+        if nvd_status:
+            st.success("✓")
+        else:
+            st.error("✗")
     
     st.markdown("---")
     
@@ -770,9 +718,9 @@ with st.sidebar:
     
     # System Info
     st.markdown("#### ℹ️ System Info")
-    st.caption("**Version:** 2.2 Light Theme")
-    st.caption("**Model:** Claude Sonnet 4.5")
-    st.caption("**Last Updated:** Nov 2025")
+    st.caption(f"**Version:** 2.0 Enterprise")
+    st.caption(f"**Model:** Claude Sonnet 4.5")
+    st.caption(f"**Last Updated:** Nov 2025")
     
     st.markdown("---")
     
@@ -891,7 +839,7 @@ with tab1:
                 plot_bgcolor='white',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_severity, width="stretch")
+            st.plotly_chart(fig_severity, use_container_width=True)
         
         with col2:
             # Classification Distribution Pie Chart
@@ -924,7 +872,7 @@ with tab1:
                 plot_bgcolor='white',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_classification, width="stretch")
+            st.plotly_chart(fig_classification, use_container_width=True)
         
         st.divider()
         
@@ -953,12 +901,12 @@ with tab1:
                 ),
                 xaxis=dict(
                     title="Status",
-                    title_font=dict(size=13, family='Inter'),
+                    titlefont=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
                     title="Count",
-                    title_font=dict(size=13, family='Inter'),
+                    titlefont=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 height=350,
@@ -968,7 +916,7 @@ with tab1:
                 plot_bgcolor='#f9fafb',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_status, width="stretch")
+            st.plotly_chart(fig_status, use_container_width=True)
         
         with col2:
             # Detected In Distribution
@@ -992,12 +940,12 @@ with tab1:
                 ),
                 xaxis=dict(
                     title="Layer",
-                    title_font=dict(size=13, family='Inter'),
+                    titlefont=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
                     title="Count",
-                    title_font=dict(size=13, family='Inter'),
+                    titlefont=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 height=350,
@@ -1007,7 +955,7 @@ with tab1:
                 plot_bgcolor='#f9fafb',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_detected, width="stretch")
+            st.plotly_chart(fig_detected, use_container_width=True)
         
         st.divider()
         
@@ -1037,12 +985,12 @@ with tab1:
                 ),
                 xaxis=dict(
                     title="Vulnerability Count",
-                    title_font=dict(size=13, family='Inter'),
+                    titlefont=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
                     title="Container Image",
-                    title_font=dict(size=13, family='Inter')
+                    titlefont=dict(size=13, family='Inter')
                 ),
                 height=400,
                 showlegend=False,
@@ -1051,7 +999,7 @@ with tab1:
                 plot_bgcolor='#f9fafb',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_images, width="stretch")
+            st.plotly_chart(fig_images, use_container_width=True)
         
         with col2:
             # Confidence Score Distribution
@@ -1071,12 +1019,12 @@ with tab1:
                 ),
                 xaxis=dict(
                     title="Confidence Score (%)",
-                    title_font=dict(size=13, family='Inter'),
+                    titlefont=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
                     title="Frequency",
-                    title_font=dict(size=13, family='Inter'),
+                    titlefont=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 height=400,
@@ -1086,7 +1034,7 @@ with tab1:
                 plot_bgcolor='#f9fafb',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_confidence, width="stretch")
+            st.plotly_chart(fig_confidence, use_container_width=True)
         
         st.divider()
         
@@ -1115,7 +1063,7 @@ with tab1:
             textfont={"size": 18, "family": "Inter", "color": "white"},
             colorbar=dict(
                 title="Count",
-                title_font=dict(family='Inter', size=13),
+                titlefont=dict(family='Inter', size=13),
                 tickfont=dict(family='Inter')
             ),
             hovertemplate='<b>%{y} - %{x}</b><br>Count: %{z}<extra></extra>'
@@ -1127,12 +1075,12 @@ with tab1:
             ),
             xaxis=dict(
                 title="Classification Type",
-                title_font=dict(size=13, family='Inter'),
+                titlefont=dict(size=13, family='Inter'),
                 side='bottom'
             ),
             yaxis=dict(
                 title="Severity Level",
-                title_font=dict(size=13, family='Inter')
+                titlefont=dict(size=13, family='Inter')
             ),
             height=400,
             margin=dict(t=20, b=50, l=100, r=100),
@@ -1140,7 +1088,7 @@ with tab1:
             plot_bgcolor='white',
             font=dict(family='Inter')
         )
-        st.plotly_chart(fig_heatmap, width="stretch")
+        st.plotly_chart(fig_heatmap, use_container_width=True)
         
         st.divider()
         
@@ -1205,7 +1153,7 @@ with tab1:
                 paper_bgcolor='white',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_gauge, width="stretch")
+            st.plotly_chart(fig_gauge, use_container_width=True)
         
         with col2:
             st.markdown("""
@@ -1299,14 +1247,18 @@ with tab1:
 with tab2:
     st.subheader("Enter Vulnerability Details")
     
-    # First row: Image Name and Severity
     col1, col2 = st.columns(2)
     
     with col1:
         image_name = st.text_input(
-            "Image Name *",
+            "Container Image Name *",
             placeholder="e.g., nginx:latest",
             help="Full container image name with tag"
+        )
+        vuln_id = st.text_input(
+            "Vulnerability ID / CVE *",
+            placeholder="e.g., CVE-2024-1234",
+            help="CVE or vendor ID - Auto-detection enabled! ✨"
         )
     
     with col2:
@@ -1314,19 +1266,16 @@ with tab2:
             "Severity Hint",
             ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
         )
-    
-    # Second row: CVE ID and Detected In (NO BUTTON HERE!)
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        vuln_id = st.text_input(
-            "CVE ID *",
-            placeholder="e.g., CVE-2024-1234",
-            help="CVE or vendor ID - Auto-detection enabled! ✨"
-        )
-    
-    with col2:
-        # Get detected type from session state
+        
+        # Auto-detect vulnerability type from CVE ID
+        detected_type = "Base Layer"
+        if vuln_id and vuln_id.strip():
+            if st.button("🔍 Auto-Detect Type", key="auto_detect_btn", help="Analyze CVE to auto-populate type"):
+                with st.spinner("Analyzing CVE..."):
+                    detected_type = detect_vulnerability_type_from_cve(vuln_id)
+                    st.session_state.detected_type = detected_type
+                    st.success(f"✅ Detected: {detected_type}")
+        
         detected_type = st.session_state.get("detected_type", "Base Layer")
         
         try:
@@ -1335,13 +1284,11 @@ with tab2:
             default_index = 0
         
         detected_in = st.selectbox(
-            "Detected In",
+            "Detected In (Auto-filled ✨)",
             ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
             index=default_index,
-            help="Auto-detected from CVE - Click Auto-Detect button below after entering CVE"
+            help="Auto-detected from CVE - Click button above to detect, or change manually"
         )
-    
-    st.markdown("")  # Add spacing
     
     description = st.text_area(
         "Vulnerability Description *",
@@ -1349,7 +1296,6 @@ with tab2:
         height=100
     )
     
-    # Third row: Version and Component
     col1, col2 = st.columns(2)
     with col1:
         current_version = st.text_input(
@@ -1362,23 +1308,10 @@ with tab2:
             placeholder="e.g., OpenSSL"
         )
     
-    # Auto-detect button - at the very bottom so it doesn't interrupt dropdown flow
-    st.markdown("---")
-    st.markdown("### 🤖 AI-Powered Auto-Detection")
-    if vuln_id and vuln_id.strip():
-        if st.button("🔍 Auto-Detect Vulnerability Type from CVE", key="auto_detect_btn", help="Use AI to automatically detect vulnerability type from CVE database", width="stretch"):
-            with st.spinner("Analyzing CVE with AI..."):
-                detected_type = detect_vulnerability_type_from_cve(vuln_id)
-                st.session_state.detected_type = detected_type
-                st.success(f"✅ Detected: {detected_type}")
-                st.rerun()
-    else:
-        st.info("💡 Enter a CVE ID above to enable auto-detection")
-    
     st.divider()
     
     # Analyze button
-    if st.button("🚀 Analyze Vulnerability", type="primary", width="stretch"):
+    if st.button("🚀 Analyze Vulnerability", type="primary", use_container_width=True):
         if not image_name or not vuln_id or not description:
             st.error("❌ Please fill in all required fields (*)")
         else:
@@ -1455,7 +1388,7 @@ with tab2:
                     col1, col2, col3 = st.columns(3)
                     
                     with col1:
-                        if st.button("⚙️ Remediate", key=f"remediate_{vuln_id}", width="stretch"):
+                        if st.button("⚙️ Remediate", key=f"remediate_{vuln_id}", use_container_width=True):
                             with st.spinner("Applying remediation..."):
                                 for i in range(101):
                                     st.progress(i / 100.0)
@@ -1475,11 +1408,11 @@ with tab2:
                             data=script,
                             file_name=f"remediate_{vuln_id}.sh",
                             mime="text/plain",
-                            width="stretch"
+                            use_container_width=True
                         )
                     
                     with col3:
-                        if st.button("🔄 Re-analyze", key=f"reanalyze_{vuln_id}", width="stretch"):
+                        if st.button("🔄 Re-analyze", key=f"reanalyze_{vuln_id}", use_container_width=True):
                             if vuln_id in st.session_state.analysis_results:
                                 del st.session_state.analysis_results[vuln_id]
                             st.rerun()
@@ -1544,7 +1477,7 @@ with tab4:
             
             # Display preview
             with st.expander("📋 Preview CSV Data", expanded=False):
-                st.dataframe(df, width="stretch")
+                st.dataframe(df, use_container_width=True)
             
             st.divider()
             
@@ -1558,7 +1491,7 @@ with tab4:
                 )
             
             # Analyze all button
-            if st.button("🚀 Analyze All Vulnerabilities", type="primary", width="stretch"):
+            if st.button("🚀 Analyze All Vulnerabilities", type="primary", use_container_width=True):
                 progress_bar = st.progress(0)
                 results_list = []
                 
@@ -1618,7 +1551,7 @@ with tab4:
                 # Display results table
                 st.subheader("📊 Analysis Results")
                 results_df = pd.DataFrame(results_list)
-                st.dataframe(results_df, width="stretch")
+                st.dataframe(results_df, use_container_width=True)
                 
                 # Download results as CSV
                 csv_results = results_df.to_csv(index=False)
@@ -1627,7 +1560,7 @@ with tab4:
                     data=csv_results,
                     file_name=f"vulnerability_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                     mime="text/csv",
-                    width="stretch"
+                    use_container_width=True
                 )
                 
                 st.divider()
@@ -1672,7 +1605,7 @@ with tab4:
                 st.subheader("🤖 Generate Remediation Script")
                 st.info("Generate an automated script to fix all vulnerabilities")
                 
-                if st.button("📝 Generate Fix Script", width="stretch"):
+                if st.button("📝 Generate Fix Script", use_container_width=True):
                     script_lines = ["#!/bin/bash", "", "# Auto-generated Vulnerability Remediation Script", 
                                    f"# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", "", 
                                    "echo '🔧 Starting vulnerability remediation...'", ""]
@@ -1707,7 +1640,7 @@ with tab4:
                         data=remediation_script,
                         file_name=f"fix_vulnerabilities_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sh",
                         mime="text/x-shellscript",
-                        width="stretch"
+                        use_container_width=True
                     )
                 
                 st.rerun()
@@ -1739,7 +1672,7 @@ with tab4:
         data=csv_template,
         file_name="vulnerability_template.csv",
         mime="text/csv",
-        width="stretch"
+        use_container_width=True
     )
 
 with tab5:
