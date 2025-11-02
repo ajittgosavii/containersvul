@@ -171,6 +171,15 @@ st.markdown("""
         box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
     }
     
+    /* Smaller font for form labels */
+    .stSelectbox label,
+    .stTextInput label,
+    .stTextArea label {
+        font-size: 0.875rem !important;
+        font-weight: 500 !important;
+        color: #374151 !important;
+    }
+    
     /* Severity Badges */
     .vulnerability-box {
         border-radius: 12px;
