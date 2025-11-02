@@ -1290,6 +1290,7 @@ with tab1:
 with tab2:
     st.subheader("Enter Vulnerability Details")
     
+    # First row: Image Name and Severity
     col1, col2 = st.columns(2)
     
     with col1:
@@ -1298,6 +1299,17 @@ with tab2:
             placeholder="e.g., nginx:latest",
             help="Full container image name with tag"
         )
+    
+    with col2:
+        severity_hint = st.selectbox(
+            "Severity Hint",
+            ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+        )
+    
+    # Second row: CVE ID and Detected In
+    col1, col2 = st.columns(2)
+    
+    with col1:
         vuln_id = st.text_input(
             "Vulnerability ID / CVE *",
             placeholder="e.g., CVE-2024-1234",
@@ -1305,12 +1317,7 @@ with tab2:
         )
     
     with col2:
-        severity_hint = st.selectbox(
-            "Severity Hint",
-            ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
-        )
-        
-        # Auto-detect section with better layout
+        # Get detected type from session state
         detected_type = st.session_state.get("detected_type", "Base Layer")
         
         try:
@@ -1325,7 +1332,8 @@ with tab2:
             help="Auto-detected from CVE - Click button below to detect, or select manually"
         )
     
-    # Auto-detect button in its own row for better alignment
+    # Auto-detect button - full width, clearly separated
+    st.markdown("")  # Add spacing
     if vuln_id and vuln_id.strip():
         if st.button("🔍 Auto-Detect Vulnerability Type", key="auto_detect_btn", help="Analyze CVE to automatically detect vulnerability type", use_container_width=True):
             with st.spinner("Analyzing CVE..."):
@@ -1334,6 +1342,7 @@ with tab2:
                 st.success(f"✅ Detected: {detected_type}")
                 st.rerun()
     
+    st.markdown("")  # Add spacing
     
     description = st.text_area(
         "Vulnerability Description *",
@@ -1341,6 +1350,7 @@ with tab2:
         height=100
     )
     
+    # Third row: Version and Component
     col1, col2 = st.columns(2)
     with col1:
         current_version = st.text_input(
@@ -1763,4 +1773,4 @@ with tab5:
         """)
 
 st.divider()
-st.caption("🔐 Container Vulnerability Analyzer | Powered by AI")
+st.caption("🔐 Container Vulnerability Analyzer | Powered by Anthropic Claude API")
