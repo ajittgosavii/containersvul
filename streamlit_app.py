@@ -31,24 +31,25 @@ st.markdown("""
     
     /* Main Background */
     .main {
-        background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+        background: #ffffff;
     }
     
     /* Hide Streamlit Branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Professional Header */
+    /* Professional Header - Light Theme */
     .header-container {
-        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
         padding: 2rem 3rem;
         border-radius: 12px;
         margin-bottom: 2rem;
-        box-shadow: 0 10px 25px rgba(30, 58, 138, 0.15);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        border: 1px solid #bfdbfe;
     }
     
     .header-title {
-        color: white;
+        color: #1e40af;
         font-size: 2rem;
         font-weight: 700;
         margin: 0;
@@ -56,7 +57,7 @@ st.markdown("""
     }
     
     .header-subtitle {
-        color: #93c5fd;
+        color: #3b82f6;
         font-size: 1rem;
         font-weight: 400;
         margin-top: 0.5rem;
@@ -84,7 +85,7 @@ st.markdown("""
         padding: 1.5rem;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        border-left: 4px solid #2563eb;
+        border-left: 4px solid #60a5fa;
     }
     
     .stMetric label {
@@ -127,14 +128,14 @@ st.markdown("""
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+        background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%) !important;
         color: white !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
     }
     
     /* Professional Buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
         color: white;
         border: none;
         border-radius: 8px;
@@ -142,13 +143,13 @@ st.markdown("""
         font-weight: 600;
         font-size: 0.95rem;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
         letter-spacing: 0.3px;
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         transform: translateY(-2px);
     }
     
@@ -166,8 +167,8 @@ st.markdown("""
     .stTextInput > div > div > input:focus,
     .stSelectbox > div > div > div:focus,
     .stTextArea > div > div > textarea:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
     }
     
     /* Severity Badges */
@@ -245,17 +246,28 @@ st.markdown("""
         border-color: #2563eb;
     }
     
-    /* Sidebar Styling */
+    /* Sidebar Styling - Light Professional Theme */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        border-right: 1px solid #e2e8f0;
     }
     
     [data-testid="stSidebar"] * {
-        color: white !important;
+        color: #334155 !important;
     }
     
     [data-testid="stSidebar"] .stMarkdown {
-        color: white !important;
+        color: #334155 !important;
+    }
+    
+    [data-testid="stSidebar"] h3 {
+        color: #1e40af !important;
+        font-weight: 600;
+    }
+    
+    [data-testid="stSidebar"] h4 {
+        color: #3b82f6 !important;
+        font-weight: 600;
     }
     
     /* Divider Styling */
@@ -288,9 +300,9 @@ st.markdown("""
         transform: translateY(-2px);
     }
     
-    /* Progress Bar */
+    /* Progress Bar - Light Theme */
     .stProgress > div > div {
-        background: linear-gradient(90deg, #2563eb, #1e40af);
+        background: linear-gradient(90deg, #60a5fa, #3b82f6);
         border-radius: 8px;
     }
     
@@ -304,13 +316,13 @@ st.markdown("""
     }
     
     [data-testid="stFileUploader"]:hover {
-        border-color: #2563eb;
+        border-color: #60a5fa;
         background: #f8fafc;
     }
     
-    /* Spinner */
+    /* Spinner - Light Theme */
     .stSpinner > div {
-        border-top-color: #2563eb !important;
+        border-top-color: #60a5fa !important;
     }
     
     /* Section Headers */
@@ -349,7 +361,7 @@ st.markdown("""
         color: #374151;
     }
     
-    /* Professional Scrollbar */
+    /* Professional Scrollbar - Light Theme */
     ::-webkit-scrollbar {
         width: 10px;
         height: 10px;
@@ -361,12 +373,12 @@ st.markdown("""
     }
     
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #2563eb, #1e40af);
+        background: linear-gradient(135deg, #93c5fd, #60a5fa);
         border-radius: 5px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #1e40af, #1e3a8a);
+        background: linear-gradient(135deg, #60a5fa, #3b82f6);
     }
     </style>
 """, unsafe_allow_html=True)
