@@ -882,7 +882,7 @@ with tab1:
                 plot_bgcolor='white',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_severity, use_container_width=True)
+            st.plotly_chart(fig_severity, width="stretch")
         
         with col2:
             # Classification Distribution Pie Chart
@@ -915,7 +915,7 @@ with tab1:
                 plot_bgcolor='white',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_classification, use_container_width=True)
+            st.plotly_chart(fig_classification, width="stretch")
         
         st.divider()
         
@@ -944,12 +944,12 @@ with tab1:
                 ),
                 xaxis=dict(
                     title="Status",
-                    titlefont=dict(size=13, family='Inter'),
+                    title_font=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
                     title="Count",
-                    titlefont=dict(size=13, family='Inter'),
+                    title_font=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 height=350,
@@ -959,7 +959,7 @@ with tab1:
                 plot_bgcolor='#f9fafb',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_status, use_container_width=True)
+            st.plotly_chart(fig_status, width="stretch")
         
         with col2:
             # Detected In Distribution
@@ -983,12 +983,12 @@ with tab1:
                 ),
                 xaxis=dict(
                     title="Layer",
-                    titlefont=dict(size=13, family='Inter'),
+                    title_font=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
                     title="Count",
-                    titlefont=dict(size=13, family='Inter'),
+                    title_font=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 height=350,
@@ -998,7 +998,7 @@ with tab1:
                 plot_bgcolor='#f9fafb',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_detected, use_container_width=True)
+            st.plotly_chart(fig_detected, width="stretch")
         
         st.divider()
         
@@ -1028,12 +1028,12 @@ with tab1:
                 ),
                 xaxis=dict(
                     title="Vulnerability Count",
-                    titlefont=dict(size=13, family='Inter'),
+                    title_font=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
                     title="Container Image",
-                    titlefont=dict(size=13, family='Inter')
+                    title_font=dict(size=13, family='Inter')
                 ),
                 height=400,
                 showlegend=False,
@@ -1042,7 +1042,7 @@ with tab1:
                 plot_bgcolor='#f9fafb',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_images, use_container_width=True)
+            st.plotly_chart(fig_images, width="stretch")
         
         with col2:
             # Confidence Score Distribution
@@ -1062,12 +1062,12 @@ with tab1:
                 ),
                 xaxis=dict(
                     title="Confidence Score (%)",
-                    titlefont=dict(size=13, family='Inter'),
+                    title_font=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
                     title="Frequency",
-                    titlefont=dict(size=13, family='Inter'),
+                    title_font=dict(size=13, family='Inter'),
                     gridcolor='#f3f4f6'
                 ),
                 height=400,
@@ -1077,7 +1077,7 @@ with tab1:
                 plot_bgcolor='#f9fafb',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_confidence, use_container_width=True)
+            st.plotly_chart(fig_confidence, width="stretch")
         
         st.divider()
         
@@ -1106,7 +1106,7 @@ with tab1:
             textfont={"size": 18, "family": "Inter", "color": "white"},
             colorbar=dict(
                 title="Count",
-                titlefont=dict(family='Inter', size=13),
+                title_font=dict(family='Inter', size=13),
                 tickfont=dict(family='Inter')
             ),
             hovertemplate='<b>%{y} - %{x}</b><br>Count: %{z}<extra></extra>'
@@ -1118,12 +1118,12 @@ with tab1:
             ),
             xaxis=dict(
                 title="Classification Type",
-                titlefont=dict(size=13, family='Inter'),
+                title_font=dict(size=13, family='Inter'),
                 side='bottom'
             ),
             yaxis=dict(
                 title="Severity Level",
-                titlefont=dict(size=13, family='Inter')
+                title_font=dict(size=13, family='Inter')
             ),
             height=400,
             margin=dict(t=20, b=50, l=100, r=100),
@@ -1131,7 +1131,7 @@ with tab1:
             plot_bgcolor='white',
             font=dict(family='Inter')
         )
-        st.plotly_chart(fig_heatmap, use_container_width=True)
+        st.plotly_chart(fig_heatmap, width="stretch")
         
         st.divider()
         
@@ -1196,7 +1196,7 @@ with tab1:
                 paper_bgcolor='white',
                 font=dict(family='Inter')
             )
-            st.plotly_chart(fig_gauge, use_container_width=True)
+            st.plotly_chart(fig_gauge, width="stretch")
         
         with col2:
             st.markdown("""
@@ -1335,7 +1335,7 @@ with tab2:
     # Auto-detect button - full width, clearly separated
     st.markdown("")  # Add spacing
     if vuln_id and vuln_id.strip():
-        if st.button("🔍 Auto-Detect Vulnerability Type", key="auto_detect_btn", help="Analyze CVE to automatically detect vulnerability type", use_container_width=True):
+        if st.button("🔍 Auto-Detect Vulnerability Type", key="auto_detect_btn", help="Analyze CVE to automatically detect vulnerability type", width="stretch"):
             with st.spinner("Analyzing CVE..."):
                 detected_type = detect_vulnerability_type_from_cve(vuln_id)
                 st.session_state.detected_type = detected_type
@@ -1366,7 +1366,7 @@ with tab2:
     st.divider()
     
     # Analyze button
-    if st.button("🚀 Analyze Vulnerability", type="primary", use_container_width=True):
+    if st.button("🚀 Analyze Vulnerability", type="primary", width="stretch"):
         if not image_name or not vuln_id or not description:
             st.error("❌ Please fill in all required fields (*)")
         else:
@@ -1443,7 +1443,7 @@ with tab2:
                     col1, col2, col3 = st.columns(3)
                     
                     with col1:
-                        if st.button("⚙️ Remediate", key=f"remediate_{vuln_id}", use_container_width=True):
+                        if st.button("⚙️ Remediate", key=f"remediate_{vuln_id}", width="stretch"):
                             with st.spinner("Applying remediation..."):
                                 for i in range(101):
                                     st.progress(i / 100.0)
@@ -1463,11 +1463,11 @@ with tab2:
                             data=script,
                             file_name=f"remediate_{vuln_id}.sh",
                             mime="text/plain",
-                            use_container_width=True
+                            width="stretch"
                         )
                     
                     with col3:
-                        if st.button("🔄 Re-analyze", key=f"reanalyze_{vuln_id}", use_container_width=True):
+                        if st.button("🔄 Re-analyze", key=f"reanalyze_{vuln_id}", width="stretch"):
                             if vuln_id in st.session_state.analysis_results:
                                 del st.session_state.analysis_results[vuln_id]
                             st.rerun()
@@ -1532,7 +1532,7 @@ with tab4:
             
             # Display preview
             with st.expander("📋 Preview CSV Data", expanded=False):
-                st.dataframe(df, use_container_width=True)
+                st.dataframe(df, width="stretch")
             
             st.divider()
             
@@ -1546,7 +1546,7 @@ with tab4:
                 )
             
             # Analyze all button
-            if st.button("🚀 Analyze All Vulnerabilities", type="primary", use_container_width=True):
+            if st.button("🚀 Analyze All Vulnerabilities", type="primary", width="stretch"):
                 progress_bar = st.progress(0)
                 results_list = []
                 
@@ -1606,7 +1606,7 @@ with tab4:
                 # Display results table
                 st.subheader("📊 Analysis Results")
                 results_df = pd.DataFrame(results_list)
-                st.dataframe(results_df, use_container_width=True)
+                st.dataframe(results_df, width="stretch")
                 
                 # Download results as CSV
                 csv_results = results_df.to_csv(index=False)
@@ -1615,7 +1615,7 @@ with tab4:
                     data=csv_results,
                     file_name=f"vulnerability_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                     mime="text/csv",
-                    use_container_width=True
+                    width="stretch"
                 )
                 
                 st.divider()
@@ -1660,7 +1660,7 @@ with tab4:
                 st.subheader("🤖 Generate Remediation Script")
                 st.info("Generate an automated script to fix all vulnerabilities")
                 
-                if st.button("📝 Generate Fix Script", use_container_width=True):
+                if st.button("📝 Generate Fix Script", width="stretch"):
                     script_lines = ["#!/bin/bash", "", "# Auto-generated Vulnerability Remediation Script", 
                                    f"# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", "", 
                                    "echo '🔧 Starting vulnerability remediation...'", ""]
@@ -1695,7 +1695,7 @@ with tab4:
                         data=remediation_script,
                         file_name=f"fix_vulnerabilities_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sh",
                         mime="text/x-shellscript",
-                        use_container_width=True
+                        width="stretch"
                     )
                 
                 st.rerun()
@@ -1727,7 +1727,7 @@ with tab4:
         data=csv_template,
         file_name="vulnerability_template.csv",
         mime="text/csv",
-        use_container_width=True
+        width="stretch"
     )
 
 with tab5:
@@ -1773,4 +1773,4 @@ with tab5:
         """)
 
 st.divider()
-st.caption("🔐 Container Vulnerability Analyzer | Powered by Anthropic Claude API")
+st.caption("🔐 Container Vulnerability Analyzer | Powered by AI")
