@@ -1315,7 +1315,7 @@ with tab2:
             ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
         )
     
-    # Second row: CVE ID and Detected In
+    # Second row: CVE ID and Detected In (NO BUTTON HERE!)
     col1, col2 = st.columns(2)
     
     with col1:
@@ -1338,18 +1338,8 @@ with tab2:
             "Detected In (Auto-filled ✨)",
             ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
             index=default_index,
-            help="Auto-detected from CVE - Click button below to detect, or select manually"
+            help="Auto-detected from CVE - Click Auto-Detect button below after entering CVE"
         )
-    
-    # Auto-detect button - full width, clearly separated
-    st.markdown("")  # Add spacing
-    if vuln_id and vuln_id.strip():
-        if st.button("🔍 Auto-Detect Vulnerability Type", key="auto_detect_btn", help="Analyze CVE to automatically detect vulnerability type", width="stretch"):
-            with st.spinner("Analyzing CVE..."):
-                detected_type = detect_vulnerability_type_from_cve(vuln_id)
-                st.session_state.detected_type = detected_type
-                st.success(f"✅ Detected: {detected_type}")
-                st.rerun()
     
     st.markdown("")  # Add spacing
     
@@ -1371,6 +1361,19 @@ with tab2:
             "Affected Component",
             placeholder="e.g., OpenSSL"
         )
+    
+    # Auto-detect button - at the very bottom so it doesn't interrupt dropdown flow
+    st.markdown("---")
+    st.markdown("### 🤖 AI-Powered Auto-Detection")
+    if vuln_id and vuln_id.strip():
+        if st.button("🔍 Auto-Detect Vulnerability Type from CVE", key="auto_detect_btn", help="Use AI to automatically detect vulnerability type from CVE database", width="stretch"):
+            with st.spinner("Analyzing CVE with AI..."):
+                detected_type = detect_vulnerability_type_from_cve(vuln_id)
+                st.session_state.detected_type = detected_type
+                st.success(f"✅ Detected: {detected_type}")
+                st.rerun()
+    else:
+        st.info("💡 Enter a CVE ID above to enable auto-detection")
     
     st.divider()
     
