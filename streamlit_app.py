@@ -1304,7 +1304,7 @@ with tab2:
     
     with col1:
         image_name = st.text_input(
-            "Container Image Name *",
+            "Image Name *",
             placeholder="e.g., nginx:latest",
             help="Full container image name with tag"
         )
@@ -1320,7 +1320,7 @@ with tab2:
     
     with col1:
         vuln_id = st.text_input(
-            "Vulnerability ID / CVE *",
+            "CVE ID *",
             placeholder="e.g., CVE-2024-1234",
             help="CVE or vendor ID - Auto-detection enabled! ✨"
         )
@@ -1335,7 +1335,7 @@ with tab2:
             default_index = 0
         
         detected_in = st.selectbox(
-            "Detected In (Auto-filled ✨)",
+            "Detected In",
             ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
             index=default_index,
             help="Auto-detected from CVE - Click Auto-Detect button below after entering CVE"
