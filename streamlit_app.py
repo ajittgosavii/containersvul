@@ -1290,50 +1290,20 @@ with tab1:
 with tab2:
     st.subheader("Enter Vulnerability Details")
     
-    # First row: Image Name and Severity
-    col1, col2 = st.columns(2)
+    # Simple vertical layout - no columns, no alignment issues!
+    image_name = st.text_input(
+        "Container Image Name *",
+        placeholder="e.g., nginx:latest",
+        help="Full container image name with tag"
+    )
     
-    with col1:
-        image_name = st.text_input(
-            "Container Image Name *",
-            placeholder="e.g., nginx:latest",
-            help="Full container image name with tag"
-        )
+    vuln_id = st.text_input(
+        "Vulnerability ID / CVE *",
+        placeholder="e.g., CVE-2024-1234",
+        help="CVE or vendor ID - Auto-detection enabled! ✨"
+    )
     
-    with col2:
-        severity_hint = st.selectbox(
-            "Severity Hint",
-            ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
-        )
-    
-    # Second row: CVE ID and Detected In
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        vuln_id = st.text_input(
-            "Vulnerability ID / CVE *",
-            placeholder="e.g., CVE-2024-1234",
-            help="CVE or vendor ID - Auto-detection enabled! ✨"
-        )
-    
-    with col2:
-        # Get detected type from session state
-        detected_type = st.session_state.get("detected_type", "Base Layer")
-        
-        try:
-            default_index = ["Base Layer", "Application Layer", "Dependencies", "Configuration"].index(detected_type)
-        except:
-            default_index = 0
-        
-        detected_in = st.selectbox(
-            "Detected In (Auto-filled ✨)",
-            ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
-            index=default_index,
-            help="Auto-detected from CVE - Click button below to detect, or select manually"
-        )
-    
-    # Auto-detect button - full width, clearly separated
-    st.markdown("")  # Add spacing
+    # Auto-detect button right after CVE input
     if vuln_id and vuln_id.strip():
         if st.button("🔍 Auto-Detect Vulnerability Type", key="auto_detect_btn", help="Analyze CVE to automatically detect vulnerability type", width="stretch"):
             with st.spinner("Analyzing CVE..."):
@@ -1342,7 +1312,25 @@ with tab2:
                 st.success(f"✅ Detected: {detected_type}")
                 st.rerun()
     
-    st.markdown("")  # Add spacing
+    severity_hint = st.selectbox(
+        "Severity Hint",
+        ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+    )
+    
+    # Get detected type from session state
+    detected_type = st.session_state.get("detected_type", "Base Layer")
+    
+    try:
+        default_index = ["Base Layer", "Application Layer", "Dependencies", "Configuration"].index(detected_type)
+    except:
+        default_index = 0
+    
+    detected_in = st.selectbox(
+        "Detected In (Auto-filled ✨)",
+        ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
+        index=default_index,
+        help="Auto-detected from CVE analysis"
+    )
     
     description = st.text_area(
         "Vulnerability Description *",
@@ -1350,18 +1338,15 @@ with tab2:
         height=100
     )
     
-    # Third row: Version and Component
-    col1, col2 = st.columns(2)
-    with col1:
-        current_version = st.text_input(
-            "Current Version",
-            placeholder="e.g., 1.1.1a"
-        )
-    with col2:
-        affected_component = st.text_input(
-            "Affected Component",
-            placeholder="e.g., OpenSSL"
-        )
+    current_version = st.text_input(
+        "Current Version",
+        placeholder="e.g., 1.1.1a"
+    )
+    
+    affected_component = st.text_input(
+        "Affected Component",
+        placeholder="e.g., OpenSSL"
+    )
     
     st.divider()
     
