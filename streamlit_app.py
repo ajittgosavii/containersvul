@@ -1654,16 +1654,23 @@ with tab4:
     st.subheader("📝 Download CSV Template")
     
     template_df = pd.DataFrame({
-        "image_name": ["nginx:1.19.0", "python:3.9-slim", "myapp:1.0"],
-        "vuln_id": ["CVE-2021-3129", "CVE-2023-12345", "CVE-2023-38545"],
-        "description": [
+        "Application": ["myapp", "myapp", "myapp"],
+        "Cloud Account": ["account-123", "account-123", "account-123"],
+        "Cluster": ["prod-cluster", "prod-cluster", "prod-cluster"],
+        "Namespace/Task": ["default", "default", "default"],
+        "Container": ["myapp-container", "myapp-container", "myapp-container"],
+        "Image": ["nginx:1.19.0", "python:3.9-slim", "myapp:1.0"],
+        "Remediation Owner": ["team-a", "team-b", "team-c"],
+        "Severity": ["HIGH", "MEDIUM", "CRITICAL"],
+        "CVE": ["CVE-2021-3129", "CVE-2023-12345", "CVE-2023-38545"],
+        "CVE Description": [
             "OpenSSL vulnerability in nginx",
             "Python interpreter vulnerability",
             "Log4Shell vulnerability in application"
         ],
-        "detected_in": ["Base Layer", "Base Layer", "Application Layer"],
-        "current_version": ["1.19.0", "3.9.1", "1.0"],
-        "affected_component": ["nginx", "python", "Log4j"]
+        "Technology": ["nginx", "python", "Log4j"],
+        "Description": ["Base Layer", "Base Layer", "Application Layer"],
+        "Remediation": ["Update base image", "Update dependencies", "Apply patch"]
     })
     
     csv_template = template_df.to_csv(index=False)
