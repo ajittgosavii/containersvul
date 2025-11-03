@@ -161,6 +161,12 @@ st.markdown("""
         font-size: 0.95rem;
         padding: 0.75rem;
         transition: all 0.2s ease;
+        color: #1f2937 !important;
+    }
+    
+    .stTextInput > div > div > input::placeholder,
+    .stTextArea > div > div > textarea::placeholder {
+        color: #9ca3af !important;
     }
     
     .stTextInput > div > div > input:focus,
@@ -168,6 +174,33 @@ st.markdown("""
     .stTextArea > div > div > textarea:focus {
         border-color: #2563eb;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        color: #1f2937 !important;
+    }
+    
+    /* Selectbox specific styling */
+    .stSelectbox > div > div > div > div {
+        color: #1f2937 !important;
+    }
+    
+    .stSelectbox [data-baseweb="select"] {
+        color: #1f2937 !important;
+    }
+    
+    /* Dropdown menu styling */
+    [data-baseweb="popover"] {
+        background: white !important;
+    }
+    
+    [data-baseweb="menu"] {
+        background: white !important;
+    }
+    
+    [data-baseweb="menu"] li {
+        color: #1f2937 !important;
+    }
+    
+    [data-baseweb="option"] {
+        color: #1f2937 !important;
     }
     
     /* Severity Badges */
@@ -1244,6 +1277,30 @@ with tab1:
 with tab2:
     st.subheader("Enter Vulnerability Details")
     
+    # Auto-detect section (outside form)
+    st.markdown("#### 🔍 Auto-Detect Vulnerability Type")
+    col_detect1, col_detect2 = st.columns([3, 1])
+    
+    with col_detect1:
+        cve_for_detect = st.text_input(
+            "Enter CVE to auto-detect",
+            placeholder="e.g., CVE-2024-1234",
+            key="cve_detect_input"
+        )
+    
+    with col_detect2:
+        if st.button("🔍 Analyze", key="auto_detect_btn", help="Analyze CVE to auto-populate type"):
+            if cve_for_detect:
+                with st.spinner("Analyzing CVE..."):
+                    detected_type = detect_vulnerability_type_from_cve(cve_for_detect)
+                    st.session_state.detected_type = detected_type
+                    st.success(f"✅ Detected: {detected_type}")
+            else:
+                st.warning("⚠️ Please enter a CVE ID first")
+    
+    st.divider()
+    
+    # Main form for vulnerability analysis
     with st.form(key="vulnerability_form"):
         col1, col2 = st.columns(2)
         
@@ -1256,7 +1313,7 @@ with tab2:
             vuln_id = st.text_input(
                 "Vulnerability ID / CVE *",
                 placeholder="e.g., CVE-2024-1234",
-                help="CVE or vendor ID - Auto-detection enabled! ✨"
+                help="CVE or vendor ID"
             )
         
         with col2:
@@ -1264,15 +1321,6 @@ with tab2:
                 "Severity Hint",
                 ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
             )
-            
-            # Auto-detect vulnerability type from CVE ID
-            detected_type = "Base Layer"
-            if vuln_id and vuln_id.strip():
-                if st.button("🔍 Auto-Detect Type", key="auto_detect_btn", help="Analyze CVE to auto-populate type"):
-                    with st.spinner("Analyzing CVE..."):
-                        detected_type = detect_vulnerability_type_from_cve(vuln_id)
-                        st.session_state.detected_type = detected_type
-                        st.success(f"✅ Detected: {detected_type}")
             
             detected_type = st.session_state.get("detected_type", "Base Layer")
             
@@ -1285,7 +1333,7 @@ with tab2:
                 "Detected In (Auto-filled ✨)",
                 ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
                 index=default_index,
-                help="Auto-detected from CVE - Click button above to detect, or change manually"
+                help="Auto-detected from CVE or change manually"
             )
         
         description = st.text_area(
