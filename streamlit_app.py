@@ -48,11 +48,12 @@ st.markdown("""
     }
     
     .header-title {
-        color: white;
+        color: white !important;
         font-size: 2rem;
         font-weight: 700;
         margin: 0;
         letter-spacing: -0.5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
     
     .header-subtitle {
@@ -719,9 +720,6 @@ st.markdown("""
 
 # Enhanced Professional Sidebar
 with st.sidebar:
-    st.markdown("### ⚙️ System Configuration")
-    st.markdown("---")
-    
     # API Status Section
     st.markdown("#### 🔌 API Connectivity")
     anthropic_status = st.secrets.get("ANTHROPIC_API_KEY")
