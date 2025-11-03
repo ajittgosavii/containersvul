@@ -40,11 +40,11 @@ st.markdown("""
     
     /* Professional Header */
     .header-container {
-        background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 50%, #3b82f6 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #1e293b 50%, #0f172a 100%);
         padding: 2rem 3rem;
         border-radius: 12px;
         margin-bottom: 2rem;
-        box-shadow: 0 10px 25px rgba(30, 58, 138, 0.15);
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
     }
     
     .header-title {
@@ -56,7 +56,7 @@ st.markdown("""
     }
     
     .header-subtitle {
-        color: #93c5fd;
+        color: #cbd5e1;
         font-size: 1rem;
         font-weight: 400;
         margin-top: 0.5rem;
@@ -67,15 +67,15 @@ st.markdown("""
         background: white;
         border-radius: 12px;
         padding: 1.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e2e8f0;
         transition: all 0.3s ease;
         height: 100%;
     }
     
     .metric-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
     }
     
     /* Enhanced Metric Display */
@@ -83,12 +83,12 @@ st.markdown("""
         background: white;
         padding: 1.5rem;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        border-left: 4px solid #3b82f6;
+        box-shadow: 0 1px 8px rgba(15, 23, 42, 0.08);
+        border-left: 4px solid #1e40af;
     }
     
     .stMetric label {
-        color: #6b7280 !important;
+        color: #64748b !important;
         font-size: 0.875rem !important;
         font-weight: 600 !important;
         text-transform: uppercase;
@@ -96,7 +96,7 @@ st.markdown("""
     }
     
     .stMetric [data-testid="stMetricValue"] {
-        color: #1f2937 !important;
+        color: #0f172a !important;
         font-size: 2rem !important;
         font-weight: 700 !important;
     }
@@ -107,7 +107,7 @@ st.markdown("""
         background: white;
         border-radius: 12px;
         padding: 0.5rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 1px 8px rgba(15, 23, 42, 0.08);
     }
     
     .stTabs [data-baseweb="tab"] {
@@ -117,24 +117,24 @@ st.markdown("""
         font-weight: 600;
         font-size: 0.95rem;
         background: transparent;
-        color: #6b7280;
+        color: #64748b;
         transition: all 0.2s ease;
     }
     
     .stTabs [data-baseweb="tab"]:hover {
-        background: #f3f4f6;
-        color: #1f2937;
+        background: #f1f5f9;
+        color: #0f172a;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%) !important;
+        background: linear-gradient(135deg, #1e40af 0%, #1e293b 100%) !important;
         color: white !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
     }
     
     /* Professional Buttons */
     .stButton > button {
-        background: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%);
+        background: linear-gradient(135deg, #1e40af 0%, #1e293b 100%);
         color: white;
         border: none;
         border-radius: 8px;
@@ -142,13 +142,13 @@ st.markdown("""
         font-weight: 600;
         font-size: 0.95rem;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        box-shadow: 0 2px 12px rgba(30, 64, 175, 0.2);
         letter-spacing: 0.3px;
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        background: linear-gradient(135deg, #1e293b 0%, #1e40af 100%);
+        box-shadow: 0 6px 20px rgba(30, 64, 175, 0.35);
         transform: translateY(-2px);
     }
     
@@ -157,26 +157,26 @@ st.markdown("""
     .stSelectbox > div > div > div,
     .stTextArea > div > div > textarea {
         border-radius: 8px;
-        border: 2px solid #e5e7eb;
+        border: 2px solid #cbd5e1;
         font-size: 0.95rem;
         padding: 0.75rem 0.875rem !important;
         transition: all 0.2s ease;
-        color: #1f2937 !important;
+        color: #0f172a !important;
         background-color: white !important;
         min-height: 44px;
     }
     
     .stTextInput > div > div > input::placeholder,
     .stTextArea > div > div > textarea::placeholder {
-        color: #9ca3af !important;
+        color: #94a3b8 !important;
     }
     
     .stTextInput > div > div > input:focus,
     .stSelectbox > div > div > div:focus,
     .stTextArea > div > div > textarea:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        color: #1f2937 !important;
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        color: #0f172a !important;
     }
     
     /* Selectbox specific styling */
@@ -186,14 +186,14 @@ st.markdown("""
     }
     
     .stSelectbox > div > div > div > div {
-        color: #1f2937 !important;
+        color: #0f172a !important;
         font-weight: 500;
         line-height: 1.5 !important;
     }
     
     /* Dropdown menu styling */
     [data-testid="stSelectOption"] {
-        color: #1f2937 !important;
+        color: #0f172a !important;
         background-color: white !important;
         padding: 0.5rem 1rem !important;
     }
@@ -284,12 +284,12 @@ st.markdown("""
     
     .streamlit-expanderHeader:hover {
         background: #f9fafb;
-        border-color: #3b82f6;
+        border-color: #1f2937;
     }
     
     /* Sidebar Styling */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #06b6d4 0%, #0ea5e9 100%);
+        background: linear-gradient(180deg, #1e40af 0%, #1e293b 100%);
     }
     
     [data-testid="stSidebar"] * {
@@ -332,7 +332,7 @@ st.markdown("""
     
     /* Progress Bar */
     .stProgress > div > div {
-        background: linear-gradient(90deg, #3b82f6, #0ea5e9);
+        background: linear-gradient(90deg, #1f2937, #1e293b);
         border-radius: 8px;
     }
     
@@ -346,13 +346,13 @@ st.markdown("""
     }
     
     [data-testid="stFileUploader"]:hover {
-        border-color: #3b82f6;
+        border-color: #1f2937;
         background: #f8fafc;
     }
     
     /* Spinner */
     .stSpinner > div {
-        border-top-color: #3b82f6 !important;
+        border-top-color: #1f2937 !important;
     }
     
     /* Section Headers */
@@ -403,12 +403,12 @@ st.markdown("""
     }
     
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #3b82f6, #0ea5e9);
+        background: linear-gradient(135deg, #1f2937, #1e293b);
         border-radius: 5px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+        background: linear-gradient(135deg, #1e293b, #1e40af);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -772,13 +772,13 @@ with st.sidebar:
         # Total Analyzed Card
         st.markdown(f"""
         <div style='
-            background: linear-gradient(135deg, #3b82f6 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #1e293b 100%);
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
         '>
-            <div style='color: #e0e7ff; font-size: 0.85rem; margin-bottom: 0.5rem;'>📋 Total Analyzed</div>
+            <div style='color: #cbd5e1; font-size: 0.85rem; margin-bottom: 0.5rem;'>📋 Total Analyzed</div>
             <div style='color: white; font-size: 1.75rem; font-weight: 700;'>{total}</div>
         </div>
         """, unsafe_allow_html=True)
@@ -786,11 +786,11 @@ with st.sidebar:
         # Remediated Card
         st.markdown(f"""
         <div style='
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
         '>
             <div style='color: #d1fae5; font-size: 0.85rem; margin-bottom: 0.5rem;'>✅ Remediated</div>
             <div style='color: white; font-size: 1.75rem; font-weight: 700;'>{remediated}</div>
@@ -800,11 +800,11 @@ with st.sidebar:
         # Pending Card
         st.markdown(f"""
         <div style='
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
         '>
             <div style='color: #fed7aa; font-size: 0.85rem; margin-bottom: 0.5rem;'>⏳ Pending</div>
             <div style='color: white; font-size: 1.75rem; font-weight: 700;'>{pending}</div>
@@ -814,12 +814,12 @@ with st.sidebar:
         # Success Rate Card
         st.markdown(f"""
         <div style='
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #5558e3 100%);
             padding: 1rem;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
         '>
-            <div style='color: #ede9fe; font-size: 0.85rem; margin-bottom: 0.5rem;'>🎯 Success Rate</div>
+            <div style='color: #e0e7ff; font-size: 0.85rem; margin-bottom: 0.5rem;'>🎯 Success Rate</div>
             <div style='color: white; font-size: 1.75rem; font-weight: 700;'>{success_pct:.0f}%</div>
         </div>
         """, unsafe_allow_html=True)
@@ -860,7 +860,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 with tab1:
     st.markdown("""
         <div style='background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
-            <h2 style='margin: 0; color: #0ea5e9; font-size: 1.75rem;'>📊 Security Dashboard</h2>
+            <h2 style='margin: 0; color: #1e293b; font-size: 1.75rem;'>📊 Security Dashboard</h2>
             <p style='margin: 0.5rem 0 0 0; color: #6b7280;'>Real-time vulnerability analytics and risk assessment</p>
         </div>
     """, unsafe_allow_html=True)
@@ -956,7 +956,7 @@ with tab1:
             classification_counts = df_dash["classification"].value_counts()
             
             # Professional classification colors
-            class_colors = ['#3b82f6', '#7c3aed', '#059669', '#f59e0b']
+            class_colors = ['#1f2937', '#7c3aed', '#059669', '#f59e0b']
             
             fig_classification = go.Figure(data=[go.Pie(
                 labels=classification_counts.index,
@@ -996,7 +996,7 @@ with tab1:
                 x=status_counts.index,
                 y=status_counts.values,
                 marker=dict(
-                    color=['#10b981' if s == 'REMEDIATED' else '#3b82f6' for s in status_counts.index],
+                    color=['#10b981' if s == 'REMEDIATED' else '#1f2937' for s in status_counts.index],
                     line=dict(color='white', width=1)
                 ),
                 text=status_counts.values,
@@ -1143,7 +1143,7 @@ with tab1:
         # Severity by Classification Heatmap
         st.markdown("""
             <div style='background: white; padding: 1rem; border-radius: 12px; margin: 2rem 0 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
-                <h3 style='margin: 0; color: #0ea5e9; font-size: 1.5rem;'>🔥 Risk Correlation Matrix</h3>
+                <h3 style='margin: 0; color: #1e293b; font-size: 1.5rem;'>🔥 Risk Correlation Matrix</h3>
                 <p style='margin: 0.5rem 0 0 0; color: #6b7280; font-size: 0.9rem;'>Severity vs Classification Analysis</p>
             </div>
         """, unsafe_allow_html=True)
@@ -1194,7 +1194,7 @@ with tab1:
         # Risk Score Summary
         st.markdown("""
             <div style='background: white; padding: 1rem; border-radius: 12px; margin: 2rem 0 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
-                <h3 style='margin: 0; color: #0ea5e9; font-size: 1.5rem;'>⚠️ Overall Risk Assessment</h3>
+                <h3 style='margin: 0; color: #1e293b; font-size: 1.5rem;'>⚠️ Overall Risk Assessment</h3>
                 <p style='margin: 0.5rem 0 0 0; color: #6b7280; font-size: 0.9rem;'>Comprehensive security posture evaluation</p>
             </div>
         """, unsafe_allow_html=True)
@@ -1258,8 +1258,8 @@ with tab1:
             st.markdown("""
                 <div style='background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); 
                             padding: 1.5rem; border-radius: 12px; height: 100%; 
-                            border: 2px solid #3b82f6;'>
-                    <p style='margin: 0; color: #0ea5e9; font-size: 0.875rem; font-weight: 600; 
+                            border: 2px solid #1f2937;'>
+                    <p style='margin: 0; color: #1e293b; font-size: 0.875rem; font-weight: 600; 
                               text-transform: uppercase; letter-spacing: 0.5px;'>RISK METRICS</p>
                     <p style='margin: 1rem 0 0 0; color: #1f2937; font-size: 2rem; font-weight: 700;'>{}/{}</p>
                     <p style='margin: 0.25rem 0 0 0; color: #6b7280; font-size: 0.875rem;'>Total Risk Points</p>
@@ -1347,7 +1347,7 @@ with tab2:
     # Professional header
     st.markdown("""
     <div style='background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
-        <h2 style='margin: 0; color: #0ea5e9; font-size: 1.75rem;'>🔍 Vulnerability Analysis</h2>
+        <h2 style='margin: 0; color: #1e293b; font-size: 1.75rem;'>🔍 Vulnerability Analysis</h2>
         <p style='margin: 0.5rem 0 0 0; color: #6b7280;'>Analyze single vulnerabilities with AI-powered insights powered by NIST & Claude</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1355,7 +1355,7 @@ with tab2:
     # NIST Database Lookup Section
     st.markdown("### 🔐 Check NIST Database")
     
-    col1, col2, col3 = st.columns([2, 1, 1])
+    col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
     
     with col1:
         nist_cve_input = st.text_input(
@@ -1380,7 +1380,7 @@ with tab2:
         if st.session_state.get("detected_vulnerability_type"):
             st.markdown(f"""
             <div style='
-                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                background: linear-gradient(135deg, #047857 0%, #065f46 100%);
                 padding: 0.75rem;
                 border-radius: 8px;
                 text-align: center;
@@ -1391,11 +1391,40 @@ with tab2:
             </div>
             """, unsafe_allow_html=True)
     
+    with col4:
+        if st.button("🔄 Clear", key="clear_detection_btn", use_container_width=True, help="Clear detection and start over"):
+            st.session_state.detected_vulnerability_type = None
+            st.session_state.detected_cve_id = None
+            st.rerun()
+    
     st.divider()
     
     # Main analysis form
     with st.form(key="vulnerability_form"):
         st.markdown("### 📋 Enter Vulnerability Details")
+        
+        # Check if CVE has been detected from NIST
+        has_detection = bool(st.session_state.get("detected_cve_id"))
+        
+        # Show detection info if available
+        if has_detection:
+            detected_cve = st.session_state.get("detected_cve_id", "")
+            detected_layer = st.session_state.get("detected_vulnerability_type", "Base Layer")
+            st.markdown(f"""
+            <div style='
+                background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+                border: 2px solid #10b981;
+                border-radius: 10px;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            '>
+                <div style='color: #065f46; font-weight: 600; margin-bottom: 0.5rem;'>✅ NIST Detection Active</div>
+                <div style='color: #047857; font-size: 0.9rem;'>
+                    <strong>CVE:</strong> {detected_cve}<br>
+                    <strong>Detected Layer:</strong> {detected_layer}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
         # Row 1: Image and CVE
         col1, col2 = st.columns(2)
@@ -1408,10 +1437,14 @@ with tab2:
             )
         
         with col2:
+            # Auto-populate CVE ID from NIST lookup if available
+            default_cve = st.session_state.get("detected_cve_id", "")
             vuln_id = st.text_input(
                 "🔐 Vulnerability ID / CVE *",
+                value=default_cve,
                 placeholder="e.g., CVE-2024-1234",
-                help="CVE or vendor vulnerability ID"
+                help="Auto-populated from NIST lookup (if detected)" if has_detection else "CVE or vendor vulnerability ID",
+                disabled=has_detection
             )
         
         # Row 2: Severity and Detection Type
@@ -1426,22 +1459,33 @@ with tab2:
             )
         
         with col2:
-            # Get detected type from NIST lookup or use default
-            detected_type = st.session_state.get("detected_vulnerability_type", "Base Layer")
-            
-            # Map detected type to index
-            options = ["Base Layer", "Application Layer", "Dependencies", "Configuration"]
-            try:
-                default_index = options.index(detected_type)
-            except:
-                default_index = 0
-            
-            detected_in = st.selectbox(
-                "📍 Detected In (from NIST)",
-                options,
-                index=default_index,
-                help="Auto-detected from NIST database or change manually"
-            )
+            if has_detection:
+                # Show read-only detection result
+                detected_type = st.session_state.get("detected_vulnerability_type", "Base Layer")
+                st.markdown(f"""
+                <div style='
+                    border: 2px solid #10b981;
+                    border-radius: 8px;
+                    padding: 0.75rem 0.875rem;
+                    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+                    color: #065f46;
+                    font-weight: 500;
+                    line-height: 1.5;
+                    margin-top: 1.75rem;
+                '>
+                    🔒 <strong>Detected In (from NIST):</strong> {detected_type}
+                </div>
+                """, unsafe_allow_html=True)
+                # Hidden input to pass value through form
+                detected_in = detected_type
+            else:
+                # Show editable selectbox if no detection
+                detected_in = st.selectbox(
+                    "📍 Detected In",
+                    ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
+                    index=0,
+                    help="Layer where vulnerability is detected"
+                )
         
         # Row 3: Description
         description = st.text_area(
@@ -1499,6 +1543,9 @@ with tab2:
                     "timestamp": datetime.now().isoformat(),
                     "details": vulnerability_details
                 })
+                # Clear detection after successful submission
+                st.session_state.detected_vulnerability_type = None
+                st.session_state.detected_cve_id = None
                 st.success("✅ Analysis Complete!")
                 st.rerun()
             except Exception as e:
