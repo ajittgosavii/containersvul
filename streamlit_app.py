@@ -900,13 +900,11 @@ with tab1:
                     font=dict(size=16, family='Inter', color='#1f2937', weight=600)
                 ),
                 xaxis=dict(
-                    title="Status",
-                    titlefont=dict(size=13, family='Inter'),
+                    title=dict(text="Status", font=dict(size=13, family='Inter')),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
-                    title="Count",
-                    titlefont=dict(size=13, family='Inter'),
+                    title=dict(text="Count", font=dict(size=13, family='Inter')),
                     gridcolor='#f3f4f6'
                 ),
                 height=350,
@@ -939,13 +937,11 @@ with tab1:
                     font=dict(size=16, family='Inter', color='#1f2937', weight=600)
                 ),
                 xaxis=dict(
-                    title="Layer",
-                    titlefont=dict(size=13, family='Inter'),
+                    title=dict(text="Layer", font=dict(size=13, family='Inter')),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
-                    title="Count",
-                    titlefont=dict(size=13, family='Inter'),
+                    title=dict(text="Count", font=dict(size=13, family='Inter')),
                     gridcolor='#f3f4f6'
                 ),
                 height=350,
@@ -984,13 +980,11 @@ with tab1:
                     font=dict(size=16, family='Inter', color='#1f2937', weight=600)
                 ),
                 xaxis=dict(
-                    title="Vulnerability Count",
-                    titlefont=dict(size=13, family='Inter'),
+                    title=dict(text="Vulnerability Count", font=dict(size=13, family='Inter')),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
-                    title="Container Image",
-                    titlefont=dict(size=13, family='Inter')
+                    title=dict(text="Container Image", font=dict(size=13, family='Inter'))
                 ),
                 height=400,
                 showlegend=False,
@@ -1018,13 +1012,11 @@ with tab1:
                     font=dict(size=16, family='Inter', color='#1f2937', weight=600)
                 ),
                 xaxis=dict(
-                    title="Confidence Score (%)",
-                    titlefont=dict(size=13, family='Inter'),
+                    title=dict(text="Confidence Score (%)", font=dict(size=13, family='Inter')),
                     gridcolor='#f3f4f6'
                 ),
                 yaxis=dict(
-                    title="Frequency",
-                    titlefont=dict(size=13, family='Inter'),
+                    title=dict(text="Frequency", font=dict(size=13, family='Inter')),
                     gridcolor='#f3f4f6'
                 ),
                 height=400,
@@ -1062,8 +1054,7 @@ with tab1:
             texttemplate='<b>%{text}</b>',
             textfont={"size": 18, "family": "Inter", "color": "white"},
             colorbar=dict(
-                title="Count",
-                titlefont=dict(family='Inter', size=13),
+                title=dict(text="Count", font=dict(family='Inter', size=13)),
                 tickfont=dict(family='Inter')
             ),
             hovertemplate='<b>%{y} - %{x}</b><br>Count: %{z}<extra></extra>'
@@ -1074,13 +1065,11 @@ with tab1:
                 font=dict(size=16, family='Inter', color='#1f2937', weight=600)
             ),
             xaxis=dict(
-                title="Classification Type",
-                titlefont=dict(size=13, family='Inter'),
+                title=dict(text="Classification Type", font=dict(size=13, family='Inter')),
                 side='bottom'
             ),
             yaxis=dict(
-                title="Severity Level",
-                titlefont=dict(size=13, family='Inter')
+                title=dict(text="Severity Level", font=dict(size=13, family='Inter'))
             ),
             height=400,
             margin=dict(t=20, b=50, l=100, r=100),
