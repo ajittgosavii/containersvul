@@ -1244,71 +1244,75 @@ with tab1:
 with tab2:
     st.subheader("Enter Vulnerability Details")
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        image_name = st.text_input(
-            "Container Image Name *",
-            placeholder="e.g., nginx:latest",
-            help="Full container image name with tag"
-        )
-        vuln_id = st.text_input(
-            "Vulnerability ID / CVE *",
-            placeholder="e.g., CVE-2024-1234",
-            help="CVE or vendor ID - Auto-detection enabled! ✨"
-        )
-    
-    with col2:
-        severity_hint = st.selectbox(
-            "Severity Hint",
-            ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+    with st.form(key="vulnerability_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            image_name = st.text_input(
+                "Container Image Name *",
+                placeholder="e.g., nginx:latest",
+                help="Full container image name with tag"
+            )
+            vuln_id = st.text_input(
+                "Vulnerability ID / CVE *",
+                placeholder="e.g., CVE-2024-1234",
+                help="CVE or vendor ID - Auto-detection enabled! ✨"
+            )
+        
+        with col2:
+            severity_hint = st.selectbox(
+                "Severity Hint",
+                ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+            )
+            
+            # Auto-detect vulnerability type from CVE ID
+            detected_type = "Base Layer"
+            if vuln_id and vuln_id.strip():
+                if st.button("🔍 Auto-Detect Type", key="auto_detect_btn", help="Analyze CVE to auto-populate type"):
+                    with st.spinner("Analyzing CVE..."):
+                        detected_type = detect_vulnerability_type_from_cve(vuln_id)
+                        st.session_state.detected_type = detected_type
+                        st.success(f"✅ Detected: {detected_type}")
+            
+            detected_type = st.session_state.get("detected_type", "Base Layer")
+            
+            try:
+                default_index = ["Base Layer", "Application Layer", "Dependencies", "Configuration"].index(detected_type)
+            except:
+                default_index = 0
+            
+            detected_in = st.selectbox(
+                "Detected In (Auto-filled ✨)",
+                ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
+                index=default_index,
+                help="Auto-detected from CVE - Click button above to detect, or change manually"
+            )
+        
+        description = st.text_area(
+            "Vulnerability Description *",
+            placeholder="Describe the vulnerability...",
+            height=100
         )
         
-        # Auto-detect vulnerability type from CVE ID
-        detected_type = "Base Layer"
-        if vuln_id and vuln_id.strip():
-            if st.button("🔍 Auto-Detect Type", key="auto_detect_btn", help="Analyze CVE to auto-populate type"):
-                with st.spinner("Analyzing CVE..."):
-                    detected_type = detect_vulnerability_type_from_cve(vuln_id)
-                    st.session_state.detected_type = detected_type
-                    st.success(f"✅ Detected: {detected_type}")
+        col1, col2 = st.columns(2)
+        with col1:
+            current_version = st.text_input(
+                "Current Version",
+                placeholder="e.g., 1.1.1a"
+            )
+        with col2:
+            affected_component = st.text_input(
+                "Affected Component",
+                placeholder="e.g., OpenSSL"
+            )
         
-        detected_type = st.session_state.get("detected_type", "Base Layer")
+        st.divider()
         
-        try:
-            default_index = ["Base Layer", "Application Layer", "Dependencies", "Configuration"].index(detected_type)
-        except:
-            default_index = 0
-        
-        detected_in = st.selectbox(
-            "Detected In (Auto-filled ✨)",
-            ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
-            index=default_index,
-            help="Auto-detected from CVE - Click button above to detect, or change manually"
-        )
+        # Submit button inside form
+        submit_button = st.form_submit_button("🚀 Analyze Vulnerability", use_container_width=True)
     
-    description = st.text_area(
-        "Vulnerability Description *",
-        placeholder="Describe the vulnerability...",
-        height=100
-    )
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        current_version = st.text_input(
-            "Current Version",
-            placeholder="e.g., 1.1.1a"
-        )
-    with col2:
-        affected_component = st.text_input(
-            "Affected Component",
-            placeholder="e.g., OpenSSL"
-        )
-    
-    st.divider()
-    
-    # Analyze button
-    if st.button("🚀 Analyze Vulnerability", type="primary", width='stretch'):
+    # Handle form submission outside the form
+    if submit_button:
         if not image_name or not vuln_id or not description:
             st.error("❌ Please fill in all required fields (*)")
         else:
