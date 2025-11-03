@@ -159,9 +159,11 @@ st.markdown("""
         border-radius: 8px;
         border: 2px solid #e5e7eb;
         font-size: 0.95rem;
-        padding: 0.75rem;
+        padding: 0.75rem 0.875rem !important;
         transition: all 0.2s ease;
         color: #1f2937 !important;
+        background-color: white !important;
+        min-height: 44px;
     }
     
     .stTextInput > div > div > input::placeholder,
@@ -178,28 +180,35 @@ st.markdown("""
     }
     
     /* Selectbox specific styling */
-    .stSelectbox > div > div > div > div {
-        color: #1f2937 !important;
+    .stSelectbox > div > div > div {
+        background-color: white !important;
+        min-height: 44px;
     }
     
-    .stSelectbox [data-baseweb="select"] {
+    .stSelectbox > div > div > div > div {
         color: #1f2937 !important;
+        font-weight: 500;
+        line-height: 1.5 !important;
     }
     
     /* Dropdown menu styling */
-    [data-baseweb="popover"] {
-        background: white !important;
+    [data-testid="stSelectOption"] {
+        color: #1f2937 !important;
+        background-color: white !important;
+        padding: 0.5rem 1rem !important;
     }
     
-    [data-baseweb="menu"] {
-        background: white !important;
-    }
-    
-    [data-baseweb="menu"] li {
+    [data-testid="stSelectOption"]:hover {
+        background-color: #f0f9ff !important;
         color: #1f2937 !important;
     }
     
-    [data-baseweb="option"] {
+    [data-testid="stSelectOption"][aria-selected="true"] {
+        background-color: #dbeafe !important;
+        color: #1f2937 !important;
+    }
+    
+    .stSelectbox [data-baseweb="select"] div {
         color: #1f2937 !important;
     }
     
@@ -734,26 +743,68 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Quick Stats
+    # Quick Stats - Professional Card Design
     if st.session_state.vulnerabilities:
         st.markdown("#### 📊 Quick Stats")
         total = len(st.session_state.vulnerabilities)
         remediated = len([v for v in st.session_state.remediation_status.values() if v.get("status") == "REMEDIATED"])
+        pending = total - remediated
+        success_pct = (remediated / total * 100) if total > 0 else 0
         
-        col1, col2, col3 = st.columns(3)
+        # Total Analyzed Card
+        st.markdown(f"""
+        <div style='
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        '>
+            <div style='color: #e0e7ff; font-size: 0.85rem; margin-bottom: 0.5rem;'>📋 Total Analyzed</div>
+            <div style='color: white; font-size: 1.75rem; font-weight: 700;'>{total}</div>
+        </div>
+        """, unsafe_allow_html=True)
         
-        with col1:
-            st.metric("📋 Total Analyzed", total)
+        # Remediated Card
+        st.markdown(f"""
+        <div style='
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        '>
+            <div style='color: #d1fae5; font-size: 0.85rem; margin-bottom: 0.5rem;'>✅ Remediated</div>
+            <div style='color: white; font-size: 1.75rem; font-weight: 700;'>{remediated}</div>
+        </div>
+        """, unsafe_allow_html=True)
         
-        with col2:
-            st.metric("✅ Remediated", remediated)
+        # Pending Card
+        st.markdown(f"""
+        <div style='
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        '>
+            <div style='color: #fed7aa; font-size: 0.85rem; margin-bottom: 0.5rem;'>⏳ Pending</div>
+            <div style='color: white; font-size: 1.75rem; font-weight: 700;'>{pending}</div>
+        </div>
+        """, unsafe_allow_html=True)
         
-        with col3:
-            if total > 0:
-                success_pct = (remediated / total * 100)
-                st.metric("🎯 Success Rate", f"{success_pct:.0f}%")
-            else:
-                st.metric("🎯 Success Rate", "0%")
+        # Success Rate Card
+        st.markdown(f"""
+        <div style='
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        '>
+            <div style='color: #ede9fe; font-size: 0.85rem; margin-bottom: 0.5rem;'>🎯 Success Rate</div>
+            <div style='color: white; font-size: 1.75rem; font-weight: 700;'>{success_pct:.0f}%</div>
+        </div>
+        """, unsafe_allow_html=True)
     
     st.markdown("---")
     
@@ -1275,94 +1326,91 @@ with tab1:
         """)
 
 with tab2:
-    st.subheader("Enter Vulnerability Details")
+    # Professional header
+    st.markdown("""
+    <div style='background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+        <h2 style='margin: 0; color: #1e40af; font-size: 1.75rem;'>🔍 Vulnerability Analysis</h2>
+        <p style='margin: 0.5rem 0 0 0; color: #6b7280;'>Analyze single vulnerabilities with AI-powered insights</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Auto-detect section (outside form)
-    st.markdown("#### 🔍 Auto-Detect Vulnerability Type")
-    col_detect1, col_detect2 = st.columns([3, 1])
-    
-    with col_detect1:
-        cve_for_detect = st.text_input(
-            "Enter CVE to auto-detect",
-            placeholder="e.g., CVE-2024-1234",
-            key="cve_detect_input"
-        )
-    
-    with col_detect2:
-        if st.button("🔍 Analyze", key="auto_detect_btn", help="Analyze CVE to auto-populate type"):
-            if cve_for_detect:
-                with st.spinner("Analyzing CVE..."):
-                    detected_type = detect_vulnerability_type_from_cve(cve_for_detect)
-                    st.session_state.detected_type = detected_type
-                    st.success(f"✅ Detected: {detected_type}")
-            else:
-                st.warning("⚠️ Please enter a CVE ID first")
-    
-    st.divider()
-    
-    # Main form for vulnerability analysis
+    # Main analysis form
     with st.form(key="vulnerability_form"):
+        st.markdown("### 📋 Enter Vulnerability Details")
+        
+        # Row 1: Image and CVE
         col1, col2 = st.columns(2)
         
         with col1:
             image_name = st.text_input(
-                "Container Image Name *",
-                placeholder="e.g., nginx:latest",
+                "🐳 Container Image Name *",
+                placeholder="e.g., nginx:1.21.0",
                 help="Full container image name with tag"
             )
+        
+        with col2:
             vuln_id = st.text_input(
-                "Vulnerability ID / CVE *",
+                "🔐 Vulnerability ID / CVE *",
                 placeholder="e.g., CVE-2024-1234",
-                help="CVE or vendor ID"
+                help="CVE or vendor vulnerability ID"
+            )
+        
+        # Row 2: Severity and Detection Type
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            severity_hint = st.selectbox(
+                "⚠️ Severity Hint",
+                ["CRITICAL", "HIGH", "MEDIUM", "LOW"],
+                index=0,
+                help="Expected severity level"
             )
         
         with col2:
-            severity_hint = st.selectbox(
-                "Severity Hint",
-                ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
-            )
-            
-            detected_type = st.session_state.get("detected_type", "Base Layer")
-            
-            try:
-                default_index = ["Base Layer", "Application Layer", "Dependencies", "Configuration"].index(detected_type)
-            except:
-                default_index = 0
-            
             detected_in = st.selectbox(
-                "Detected In (Auto-filled ✨)",
+                "📍 Detected In",
                 ["Base Layer", "Application Layer", "Dependencies", "Configuration"],
-                index=default_index,
-                help="Auto-detected from CVE or change manually"
+                index=0,
+                help="Layer where vulnerability is detected"
             )
         
+        # Row 3: Description
         description = st.text_area(
-            "Vulnerability Description *",
-            placeholder="Describe the vulnerability...",
-            height=100
+            "📝 Vulnerability Description *",
+            placeholder="Describe the vulnerability, its impact, and potential risks...",
+            height=120,
+            help="Detailed description of the vulnerability"
         )
         
+        # Row 4: Optional fields
         col1, col2 = st.columns(2)
+        
         with col1:
             current_version = st.text_input(
-                "Current Version",
-                placeholder="e.g., 1.1.1a"
+                "📌 Current Version",
+                placeholder="e.g., 1.19.0",
+                help="Current version of the affected component"
             )
+        
         with col2:
             affected_component = st.text_input(
-                "Affected Component",
-                placeholder="e.g., OpenSSL"
+                "🔧 Affected Component",
+                placeholder="e.g., OpenSSL",
+                help="Name of the affected component"
             )
         
         st.divider()
         
-        # Submit button inside form
-        submit_button = st.form_submit_button("🚀 Analyze Vulnerability", use_container_width=True)
+        # Submit button
+        submit_button = st.form_submit_button(
+            "🚀 Analyze Vulnerability",
+            use_container_width=True
+        )
     
-    # Handle form submission outside the form
+    # Handle form submission
     if submit_button:
         if not image_name or not vuln_id or not description:
-            st.error("❌ Please fill in all required fields (*)")
+            st.error("❌ Please fill in all required fields marked with *")
         else:
             vulnerability_details = {
                 "image_name": image_name,
@@ -1386,12 +1434,11 @@ with tab2:
                 st.rerun()
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
-
-# Display results
-with tab2:
+    
+    # Display analysis results section
     if st.session_state.vulnerabilities:
         st.divider()
-        st.subheader("📋 Analysis Results")
+        st.subheader("📋 Recent Analysis Results")
         
         for idx, vuln_item in enumerate(reversed(st.session_state.vulnerabilities)):
             vuln_id = vuln_item["id"]
@@ -1465,6 +1512,19 @@ with tab2:
                             if vuln_id in st.session_state.analysis_results:
                                 del st.session_state.analysis_results[vuln_id]
                             st.rerun()
+    else:
+        st.markdown("""
+        <div style='
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 5px solid #0284c7;
+            text-align: center;
+        '>
+            <h3 style='color: #0c4a6e; margin: 0 0 0.5rem 0;'>🔍 No Vulnerabilities Analyzed Yet</h3>
+            <p style='color: #0c4a6e; margin: 0;'>Fill in the form above and click "Analyze Vulnerability" to get started!</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 with tab3:
     st.subheader("📈 Vulnerability History")
